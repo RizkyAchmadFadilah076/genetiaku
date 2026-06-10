@@ -1,4 +1,4 @@
-import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { type FormEvent } from 'react';
 
 import InputError from '@/components/input-error';
@@ -55,14 +55,14 @@ export default function TrainingDataImport({
                     <div>
                         <h1 className="text-2xl font-semibold">Impor Data Latih</h1>
                         <p className="text-sm text-muted-foreground">
-                            Unggah berkas CSV (ekspor dari Excel: Save As → CSV). Seluruh baris
-                            divalidasi terlebih dahulu; bila ada baris tidak valid, tidak ada data
-                            yang disimpan.
+                            Unggah berkas Excel (.xlsx) sesuai template. CSV lama tetap didukung.
+                            Seluruh baris divalidasi terlebih dahulu; bila ada baris tidak valid,
+                            tidak ada data yang disimpan.
                         </p>
                     </div>
                     <div className="flex gap-2">
                         <Button variant="outline" asChild>
-                            <a href="/admin/data-latih/template">Unduh Template CSV</a>
+                            <a href="/admin/data-latih/template">Unduh Template Excel</a>
                         </Button>
                         <Button variant="outline" onClick={() => router.visit('/admin/data-latih')}>
                             Kembali
@@ -82,22 +82,26 @@ export default function TrainingDataImport({
                     </div>
                 ) : null}
 
-                <form onSubmit={submit} className="max-w-xl space-y-4 rounded-lg border border-sidebar-border/70 p-5 dark:border-sidebar-border">
+                <form
+                    onSubmit={submit}
+                    className="max-w-xl space-y-4 rounded-lg border border-sidebar-border/70 p-5 dark:border-sidebar-border"
+                >
                     <div className="grid gap-2">
-                        <Label htmlFor="file">Berkas CSV</Label>
+                        <Label htmlFor="file">Berkas Excel / CSV</Label>
                         <Input
                             id="file"
                             type="file"
-                            accept=".csv,text/csv"
-                            onChange={(e) => setData('file', e.target.files?.[0] ?? null)}
+                            accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
+                            onChange={(event) => setData('file', event.target.files?.[0] ?? null)}
                         />
                         <InputError message={errors.file} />
                         <p className="text-xs text-muted-foreground">
-                            Format maksimal 8 MB. Pemisah kolom: koma (,) atau titik koma (;).
+                            Format utama: .xlsx dari template. Ukuran maksimal 8 MB. Untuk CSV,
+                            pemisah kolom boleh koma (,) atau titik koma (;).
                         </p>
                     </div>
                     <Button type="submit" disabled={processing}>
-                        {processing ? 'Mengimpor…' : 'Impor'}
+                        {processing ? 'Mengimpor...' : 'Impor'}
                     </Button>
                 </form>
 
@@ -118,11 +122,11 @@ export default function TrainingDataImport({
                     </div>
                 ) : null}
 
-                {/* Acuan kolom & nilai yang valid */}
                 <div className="rounded-lg border border-sidebar-border/70 p-5 dark:border-sidebar-border">
                     <h2 className="text-base font-semibold">Acuan Kolom & Nilai Valid</h2>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        Header CSV wajib memuat seluruh nama kolom berikut (urutan boleh berbeda):
+                        Sheet pertama wajib memuat seluruh nama kolom berikut pada baris pertama
+                        (urutan boleh berbeda):
                     </p>
                     <code className="mt-2 block overflow-x-auto rounded bg-muted px-3 py-2 text-xs">
                         {columns.join(', ')}
@@ -133,13 +137,15 @@ export default function TrainingDataImport({
                             <div key={category} className="text-sm">
                                 <span className="font-medium">{category}:</span>{' '}
                                 <span className="text-muted-foreground">
-                                    {values.length > 0 ? values.join(', ') : '— belum ada nilai —'}
+                                    {values.length > 0 ? values.join(', ') : '- belum ada nilai -'}
                                 </span>
                             </div>
                         ))}
                         <div className="text-sm">
                             <span className="font-medium">Status Thalassemia (ayah/ibu):</span>{' '}
-                            <span className="text-muted-foreground">{screeningOptions.join(', ')}</span>
+                            <span className="text-muted-foreground">
+                                {screeningOptions.join(', ')}
+                            </span>
                         </div>
                         <div className="text-sm">
                             <span className="font-medium">Risiko Thalassemia Bayi:</span>{' '}

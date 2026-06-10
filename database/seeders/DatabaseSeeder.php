@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'admin@genetikaku.test'],
             [
                 'name' => 'Admin GENETIKAKU',
+                'username' => 'admin',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'email_verified_at' => now(),
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'test@example.com'],
             [
                 'name' => 'Test User',
+                'username' => 'testuser',
                 'password' => Hash::make('password'),
                 'role' => 'user',
                 'email_verified_at' => now(),

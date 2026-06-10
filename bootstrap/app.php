@@ -25,6 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        $middleware->redirectUsersTo(
+            fn (Request $request): string => $request->user()?->isAdmin() ? '/admin' : '/dashboard',
+        );
+
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
             'screening.completed' => EnsureScreeningCompleted::class,

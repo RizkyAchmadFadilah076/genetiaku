@@ -8,6 +8,7 @@ import {
     LayoutGrid,
     Network,
     Newspaper,
+    Users,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
@@ -70,6 +71,11 @@ const mainNavItems: NavItem[] = [
         title: 'Hasil Prediksi',
         href: admin.hasilPrediksi.index(),
         icon: ClipboardList,
+    },
+    {
+        title: 'Pengguna',
+        href: '/admin/pengguna',
+        icon: Users,
     },
 ];
 

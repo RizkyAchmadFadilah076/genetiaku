@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\KnowledgeBaseController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\TrainingDataController;
 use App\Http\Controllers\Admin\TrainingDataImportController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ArticleController;
 use App\Http\Controllers\Public\PredictionController;
@@ -72,15 +73,22 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         ->name('data-latih.import.store');
     Route::get('data-latih/template', [TrainingDataImportController::class, 'template'])
         ->name('data-latih.template');
+    Route::get('data-latih/export', [TrainingDataController::class, 'export'])
+        ->name('data-latih.export');
+    Route::delete('data-latih/hapus-semua', [TrainingDataController::class, 'destroyAll'])
+        ->name('data-latih.destroy-all');
 
     Route::resource('data-latih', TrainingDataController::class)
         ->except(['show'])
         ->parameters(['data-latih' => 'dataLatih']);
 
-    // Modul manajemen Hasil_Prediksi (Req 15). Nama route: admin.hasil-prediksi.*
     Route::resource('hasil-prediksi', PredictionResultController::class)
         ->only(['index', 'show', 'destroy'])
         ->parameters(['hasil-prediksi' => 'hasilPrediksi']);
+
+    Route::resource('pengguna', UserController::class)
+        ->except(['show'])
+        ->parameters(['pengguna' => 'pengguna']);
 });
 
 require __DIR__.'/settings.php';

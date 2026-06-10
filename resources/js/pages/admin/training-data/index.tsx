@@ -41,9 +41,23 @@ const COLUMNS: { key: keyof TrainingRow; label: string }[] = [
 ];
 
 export default function TrainingDataIndex({ rows }: IndexProps) {
+    const handleExport = () => {
+        window.location.href = '/admin/data-latih/export';
+    };
+
     const handleDelete = (id: number) => {
         if (confirm('Hapus baris Data Latih ini?')) {
             router.delete(`/admin/data-latih/${id}`, { preserveScroll: true });
+        }
+    };
+
+    const handleDeleteAll = () => {
+        if (
+            confirm(
+                `Hapus semua Data Latih (${rows.total} baris)? Tindakan ini tidak dapat dibatalkan.`,
+            )
+        ) {
+            router.delete('/admin/data-latih/hapus-semua', { preserveScroll: true });
         }
     };
 
@@ -58,9 +72,23 @@ export default function TrainingDataIndex({ rows }: IndexProps) {
                             Baris Data_Latih yang dipakai Mesin Naive Bayes.
                         </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap justify-end gap-2">
+                        <Button
+                            variant="outline"
+                            onClick={handleExport}
+                            disabled={rows.total === 0}
+                        >
+                            Download Excel
+                        </Button>
                         <Button variant="outline" asChild>
-                            <Link href="/admin/data-latih/import">Impor CSV</Link>
+                            <Link href="/admin/data-latih/import">Impor Excel</Link>
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={handleDeleteAll}
+                            disabled={rows.total === 0}
+                        >
+                            Hapus Semua
                         </Button>
                         <Button asChild>
                             <Link href="/admin/data-latih/create">Tambah Baris</Link>
@@ -137,7 +165,7 @@ export default function TrainingDataIndex({ rows }: IndexProps) {
 
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <p className="text-sm text-muted-foreground">
-                                Menampilkan {rows.from ?? 0}–{rows.to ?? 0} dari{' '}
+                                Menampilkan {rows.from ?? 0}-{rows.to ?? 0} dari{' '}
                                 {rows.total} baris
                             </p>
                             {rows.last_page > 1 ? (

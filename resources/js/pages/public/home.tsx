@@ -159,7 +159,7 @@ export default function Home({ intro, highlights, disclaimer, disclaimerAvailabl
                 >
                     <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
                         <Sparkles className="h-4 w-4" aria-hidden="true" />
-                        Sistem Pakar Skrining Thalassemia
+                        Sistem Pakar Prediksi Thalassemia
                     </span>
 
                     {/* Heading pada barisnya sendiri */}
