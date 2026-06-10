@@ -18,6 +18,8 @@ class ScreeningResult extends Model
         'mother_name',
         'father_result',
         'mother_result',
+        'father_indicators',
+        'mother_indicators',
     ];
 
     
@@ -26,6 +28,8 @@ class ScreeningResult extends Model
         return [
             'father_result' => ScreeningCategory::class,
             'mother_result' => ScreeningCategory::class,
+            'father_indicators' => 'array',
+            'mother_indicators' => 'array',
         ];
     }
 

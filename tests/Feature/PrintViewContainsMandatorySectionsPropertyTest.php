@@ -20,7 +20,7 @@ uses(TestTrait::class, RefreshDatabaseWithoutSeeding::class);
  * kapan pun berdasarkan id-nya. Controller PredictionController@print merender
  * komponen Inertia 'public/prediction/print' dengan props:
  *   - physical        : map kategori PhenotypeCategory => nilai (Req 5.2)
- *   - thalassemiaRisk  : Risiko_Thalassemia_Bayi (Rendah|Sedang|Tinggi) (Req 5.2)
+ *   - thalassemiaRisk  : Risiko_Thalassemia_Bayi (Minor|Intermedia|Mayor) (Req 5.2)
  *   - probabilities    : map variabel keluaran => (map kelas => float) (Req 5.2)
  *   - education        : { result_explanation, thalassemia_info, follow_up_advice } (Req 5.2)
  *   - disclaimer       : pernyataan penyangkalan (Req 5.2)
@@ -158,7 +158,7 @@ it('tampilan cetak Hasil_Prediksi memuat seluruh bagian wajib', function () {
             expect($actualRisk)->toBeString();
             expect($actualRisk)->not->toBe('');
             expect($actualRisk)->toBe($thalassemiaRisk->value);
-            expect(in_array($actualRisk, ['Rendah', 'Sedang', 'Tinggi'], true))->toBeTrue();
+            expect(in_array($actualRisk, ['Minor', 'Intermedia', 'Mayor'], true))->toBeTrue();
 
             // --- Bagian wajib 3: nilai probabilitas (Req 5.2) ---
             $actualProbabilities = $props['probabilities'] ?? null;

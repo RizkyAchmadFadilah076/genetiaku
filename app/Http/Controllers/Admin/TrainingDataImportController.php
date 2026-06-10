@@ -51,9 +51,9 @@ class TrainingDataImportController extends Controller
             fwrite($out, "\xEF\xBB\xBF");
             fputcsv($out, self::COLUMNS);
             fputcsv($out, [
-                'O', 'Cokelat', 'Lurus', 'Melekat', 'Normal',
+                'O', 'Cokelat', 'Lurus', 'Melekat', 'Penderita',
                 'O', 'Hitam', 'Lurus', 'Terpisah', 'Carrier',
-                'O', 'Cokelat', 'Lurus', 'Melekat', 'Sedang',
+                'O', 'Cokelat', 'Lurus', 'Melekat', 'Intermedia',
             ]);
             fclose($out);
         }, $filename, [

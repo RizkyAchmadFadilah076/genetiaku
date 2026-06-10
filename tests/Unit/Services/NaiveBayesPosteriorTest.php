@@ -20,8 +20,8 @@ const NB_POST_BLOOD = ['A', 'B', 'AB', 'O'];
 const NB_POST_IRIS = ['Coklat', 'Hitam', 'Biru'];
 const NB_POST_HAIR = ['Lurus', 'Ikal', 'Keriting'];
 const NB_POST_EAR = ['Menempel', 'Menggantung'];
-const NB_POST_THAL = ['Normal', 'Carrier', 'Berisiko Tinggi'];
-const NB_POST_RISK = ['Rendah', 'Sedang', 'Tinggi'];
+const NB_POST_THAL = ['Normal', 'Carrier', 'Penderita'];
+const NB_POST_RISK = ['Minor', 'Intermedia', 'Mayor'];
 
 /**
  * Implementasi referensi INDEPENDEN dari skor posterior tak ternormalisasi
@@ -141,7 +141,7 @@ it('menghasilkan posterior sama dengan prior dikali hasil kali likelihood', func
             $rows = [array_combine($keys, [
                 'A', 'Coklat', 'Lurus', 'Menempel', 'Normal',
                 'B', 'Hitam', 'Ikal', 'Menggantung', 'Carrier',
-                'AB', 'Biru', 'Keriting', 'Menempel', 'Rendah',
+                'AB', 'Biru', 'Keriting', 'Menempel', 'Minor',
             ])];
         }
 

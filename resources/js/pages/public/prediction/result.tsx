@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import {
     Baby,
     BookOpen,
+    CheckCircle2,
     Droplet,
     Ear,
     Eye,
@@ -9,6 +10,7 @@ import {
     Printer,
     ShieldCheck,
     Sparkles,
+    Users,
     Workflow,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -22,6 +24,8 @@ interface ScreeningSummary {
     mother_name: string;
     father_result: string;
     mother_result: string;
+    father_indicators: string[];
+    mother_indicators: string[];
 }
 
 /** Konten edukasi yang menyertai hasil (Req 4.4). */
@@ -29,6 +33,9 @@ interface EducationContent {
     result_explanation: string;
     thalassemia_info: string;
     follow_up_advice: string;
+    method_explanation: string;
+    mendel_basis: string;
+    two_stage_flow: string;
 }
 
 interface PredictionResultProps {
@@ -65,21 +72,31 @@ const toPercent = (value: number): number => Math.round(value * 1000) / 10;
 /** Gaya badge & deskripsi berdasarkan klasifikasi risiko. */
 const riskMeta = (
     risk: string,
-): { badge: string; card: string; bar: string; note: string } => {
+): {
+    badge: string;
+    card: string;
+    bar: string;
+    note: string;
+    meaning: string;
+} => {
     switch (risk) {
-        case 'Tinggi':
+        case 'Mayor':
             return {
                 badge: 'bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-200',
                 card: 'from-rose-50 to-rose-100/40 border-rose-200 dark:border-rose-900/60',
                 bar: 'bg-rose-400',
                 note: 'Disarankan pemeriksaan laboratorium dan konsultasi genetik lebih lanjut.',
+                meaning:
+                    'Thalassemia Mayor adalah bentuk paling berat. Penderita umumnya mengalami anemia parah sejak bayi dan biasanya membutuhkan transfusi darah rutin seumur hidup.',
             };
-        case 'Sedang':
+        case 'Intermedia':
             return {
                 badge: 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-200',
                 card: 'from-amber-50 to-amber-100/40 border-amber-200 dark:border-amber-900/60',
                 bar: 'bg-amber-400',
                 note: 'Pertimbangkan pemeriksaan lanjutan untuk memastikan kondisi.',
+                meaning:
+                    'Thalassemia Intermedia adalah tingkat menengah. Gejala anemia bersifat ringan hingga sedang dan transfusi darah hanya dibutuhkan sesekali pada kondisi tertentu.',
             };
         default:
             return {
@@ -87,9 +104,93 @@ const riskMeta = (
                 card: 'from-emerald-50 to-emerald-100/40 border-emerald-200 dark:border-emerald-900/60',
                 bar: 'bg-emerald-400',
                 note: 'Tetap jaga kesehatan dan lakukan pemeriksaan rutin sesuai anjuran.',
+                meaning:
+                    'Thalassemia Minor adalah tingkat paling ringan. Umumnya tanpa gejala atau hanya anemia ringan, dan biasanya tidak memerlukan pengobatan khusus.',
             };
     }
 };
+
+/** Ringkasan singkat ketiga tingkat risiko untuk konteks pembanding. */
+const RISK_LEVEL_LEGEND: { label: string; dot: string; desc: string }[] = [
+    {
+        label: 'Minor',
+        dot: 'bg-emerald-400',
+        desc: 'Paling ringan — umumnya tanpa gejala, tidak perlu pengobatan khusus.',
+    },
+    {
+        label: 'Intermedia',
+        dot: 'bg-amber-400',
+        desc: 'Menengah — anemia ringan hingga sedang, transfusi hanya sesekali.',
+    },
+    {
+        label: 'Mayor',
+        dot: 'bg-rose-400',
+        desc: 'Paling berat — anemia parah, umumnya butuh transfusi darah rutin.',
+    },
+];
+
+/** Gaya badge Hasil_Skrining_Orang_Tua (Normal/Carrier/Penderita). */
+const screeningBadge = (result: string): string => {
+    switch (result) {
+        case 'Penderita':
+            return 'bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-200';
+        case 'Carrier':
+            return 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-200';
+        default:
+            return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-200';
+    }
+};
+
+/** Kartu ringkasan skrining satu orang tua: nama, hasil, indikator dipilih. */
+function ScreeningParentCard({
+    name,
+    result,
+    indicators,
+}: {
+    name: string;
+    result: string;
+    indicators: string[];
+}) {
+    return (
+        <div className="rounded-xl border border-neutral-200 bg-neutral-50/60 p-4 dark:border-neutral-800 dark:bg-neutral-900/40">
+            <div className="flex items-center justify-between gap-3">
+                <p className="truncate font-semibold text-neutral-900 dark:text-neutral-100">
+                    {name}
+                </p>
+                <span
+                    className={cn(
+                        'inline-flex shrink-0 items-center rounded-full px-3 py-1 text-sm font-semibold',
+                        screeningBadge(result),
+                    )}
+                >
+                    {result}
+                </span>
+            </div>
+            <div className="mt-3">
+                <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                    Indikator yang dipilih
+                </p>
+                {indicators.length > 0 ? (
+                    <ul className="mt-2 flex flex-wrap gap-2">
+                        {indicators.map((indicator) => (
+                            <li
+                                key={indicator}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-medium text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-200"
+                            >
+                                <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                                {indicator}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+                        Tidak ada indikator yang dipilih.
+                    </p>
+                )}
+            </div>
+        </div>
+    );
+}
 
 /** Kartu seksi dengan judul beraksen ikon. */
 function SectionCard({
@@ -122,6 +223,9 @@ function SectionCard({
 }
 
 const EDUCATION_ITEMS: { key: keyof EducationContent; title: string }[] = [
+    { key: 'method_explanation', title: 'Metode Naive Bayes' },
+    { key: 'two_stage_flow', title: 'Alur Dua Tahap' },
+    { key: 'mendel_basis', title: 'Dasar Hukum Mendel' },
     { key: 'result_explanation', title: 'Penjelasan Hasil' },
     { key: 'thalassemia_info', title: 'Tentang Thalassemia' },
     { key: 'follow_up_advice', title: 'Saran Pemeriksaan Lanjutan' },
@@ -189,6 +293,29 @@ export default function PredictionResultPage({
                 </header>
 
                 <div className="mt-6 space-y-6">
+                    {/* Hasil Skrining Orang Tua (Tahap 1) — konteks sebelum hasil bayi */}
+                    <SectionCard
+                        icon={Users}
+                        title="Hasil Skrining Orang Tua (Tahap 1)"
+                    >
+                        <p className="-mt-2 mb-4 text-sm text-slate-600 dark:text-neutral-400">
+                            Klasifikasi status Thalassemia tiap orang tua dari indikator yang
+                            dipilih. Hasil ini menjadi masukan untuk prediksi karakteristik bayi.
+                        </p>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <ScreeningParentCard
+                                name={screening.father_name}
+                                result={screening.father_result}
+                                indicators={screening.father_indicators}
+                            />
+                            <ScreeningParentCard
+                                name={screening.mother_name}
+                                result={screening.mother_result}
+                                indicators={screening.mother_indicators}
+                            />
+                        </div>
+                    </SectionCard>
+
                     {/* Risiko Thalassemia — kartu menonjol */}
                     <section
                         className={cn(
@@ -219,6 +346,41 @@ export default function PredictionResultPage({
                                 {thalassemiaRisk}
                             </span>
                         </div>
+
+                        {/* Penjelasan arti tingkat risiko hasil prediksi */}
+                        <p className="mt-4 rounded-xl bg-white/60 p-3 text-sm leading-relaxed text-slate-700 dark:bg-neutral-900/50 dark:text-neutral-200">
+                            <span className="font-semibold">Apa arti "{thalassemiaRisk}"? </span>
+                            {risk.meaning}
+                        </p>
+
+                        {/* Legenda ketiga tingkat sebagai pembanding */}
+                        <dl className="mt-3 grid gap-2 sm:grid-cols-3">
+                            {RISK_LEVEL_LEGEND.map((level) => (
+                                <div
+                                    key={level.label}
+                                    className={cn(
+                                        'rounded-xl border bg-white/50 p-3 dark:bg-neutral-900/40',
+                                        level.label === thalassemiaRisk
+                                            ? 'border-slate-400 dark:border-neutral-500'
+                                            : 'border-transparent',
+                                    )}
+                                >
+                                    <dt className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-neutral-100">
+                                        <span
+                                            className={cn(
+                                                'h-2.5 w-2.5 rounded-full',
+                                                level.dot,
+                                            )}
+                                            aria-hidden="true"
+                                        />
+                                        {level.label}
+                                    </dt>
+                                    <dd className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-neutral-400">
+                                        {level.desc}
+                                    </dd>
+                                </div>
+                            ))}
+                        </dl>
                     </section>
 
                     {/* Karakteristik fisik bayi */}

@@ -37,9 +37,9 @@ class PredictionResultFactory extends Factory
         ];
 
         $risk = fake()->randomElement([
-            ThalassemiaRisk::Rendah->value,
-            ThalassemiaRisk::Sedang->value,
-            ThalassemiaRisk::Tinggi->value,
+            ThalassemiaRisk::Minor->value,
+            ThalassemiaRisk::Intermedia->value,
+            ThalassemiaRisk::Mayor->value,
         ]);
 
         return [
@@ -65,9 +65,9 @@ class PredictionResultFactory extends Factory
         }
 
         $probabilities['baby_thalassemia_risk'] = $this->distribution([
-            ThalassemiaRisk::Rendah->value,
-            ThalassemiaRisk::Sedang->value,
-            ThalassemiaRisk::Tinggi->value,
+            ThalassemiaRisk::Minor->value,
+            ThalassemiaRisk::Intermedia->value,
+            ThalassemiaRisk::Mayor->value,
         ]);
 
         return $probabilities;

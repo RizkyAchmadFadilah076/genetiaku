@@ -28,7 +28,7 @@ class ScreeningResultFactory extends Factory
         $categories = [
             ScreeningCategory::Normal->value,
             ScreeningCategory::Carrier->value,
-            ScreeningCategory::BerisikoTinggi->value,
+            ScreeningCategory::Penderita->value,
         ];
 
         return [

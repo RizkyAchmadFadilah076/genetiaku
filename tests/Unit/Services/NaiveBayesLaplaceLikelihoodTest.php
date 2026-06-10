@@ -18,8 +18,8 @@ const NB_LAP_BLOOD = ['A', 'B', 'O'];
 const NB_LAP_IRIS = ['Cokelat', 'Hitam'];
 const NB_LAP_HAIR = ['Lurus', 'Keriting'];
 const NB_LAP_EAR = ['Menggantung', 'Menempel'];
-const NB_LAP_THAL_INPUT = ['Normal', 'Carrier', 'Berisiko Tinggi']; // ScreeningCategory
-const NB_LAP_THAL_RISK = ['Rendah', 'Sedang', 'Tinggi'];            // ThalassemiaRisk
+const NB_LAP_THAL_INPUT = ['Normal', 'Carrier', 'Penderita']; // ScreeningCategory
+const NB_LAP_THAL_RISK = ['Minor', 'Intermedia', 'Mayor'];    // ThalassemiaRisk
 
 /**
  * Bangun satu baris Data_Latih dari tuple nilai yang dihasilkan generator.
@@ -93,7 +93,7 @@ it('menjamin setiap likelihood P(x_i|c) berada di (0, 1] berkat Laplace smoothin
         ->then(function (array $rowTuples, array $selectors) use ($classifier) {
             // Property mensyaratkan Data_Latih tidak kosong; jamin minimal satu baris.
             if ($rowTuples === []) {
-                $rowTuples = [['A', 'Cokelat', 'Lurus', 'Menggantung', 'Normal', 'B', 'Hitam', 'Keriting', 'Menempel', 'Carrier', 'O', 'Cokelat', 'Lurus', 'Menempel', 'Rendah']];
+                $rowTuples = [['A', 'Cokelat', 'Lurus', 'Menggantung', 'Normal', 'B', 'Hitam', 'Keriting', 'Menempel', 'Carrier', 'O', 'Cokelat', 'Lurus', 'Menempel', 'Minor']];
             }
 
             /** @var list<TrainingRow> $training */

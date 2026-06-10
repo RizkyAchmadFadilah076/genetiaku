@@ -11,18 +11,20 @@ use Tests\RefreshDatabaseWithoutSeeding;
 uses(TestTrait::class, RefreshDatabaseWithoutSeeding::class);
 
 /*
- * Property 12 menguji invarian round-trip penyimpanan Hasil_Prediksi (Req 4.6):
- * untuk PredictionOutcome apa pun yang dihitung (referensi Hasil_Skrining,
- * hasil fisik, risiko Thalassemia, dan probabilitas), menyimpannya sebagai
- * Hasil_Prediksi lalu memuatnya kembali dari penyimpanan HARUS mengembalikan
- * data yang setara, termasuk struktur fisik dan probabilitas yang diserialisasi.
+ * Property 2 (report-alignment) menguji invarian round-trip penyimpanan
+ * Risiko_Thalassemia_Bayi pada Hasil_Prediksi (Req 4.1, 1.4, 7.1, 7.2):
+ * untuk ThalassemiaRisk apa pun beserta hasil fisik dan probabilitas yang
+ * valid, menyimpan sebuah PredictionResult lalu memuatnya kembali dari
+ * penyimpanan HARUS mengembalikan thalassemia_risk yang identik, dan nilainya
+ * selalu salah satu dari Istilah_Laporan {Minor, Intermedia, Mayor} — nilai
+ * yang sama inilah yang diteruskan ke Halaman_Hasil dan Halaman_Cetak.
  *
  * Pendekatan (Pest + Eris, lewat model Eloquent PredictionResult):
  *   - Bangkitkan map fisik acak: keempat kategori PhenotypeCategory
  *     ('Golongan Darah', 'Warna Iris Mata', 'Tekstur Rambut',
  *     'Bentuk Cuping Telinga') => nilai string acak non-kosong.
  *   - Bangkitkan risiko Thalassemia acak dari ThalassemiaRisk
- *     (Rendah|Sedang|Tinggi).
+ *     (Minor|Intermedia|Mayor).
  *   - Bangkitkan map probabilitas bersarang acak: variabel keluaran
  *     (baby_blood, baby_iris, baby_hair, baby_ear, baby_thalassemia_risk) =>
  *     (map kelas => float di [0,1]). Float dibangkitkan agar round-trip eksak
@@ -30,18 +32,26 @@ uses(TestTrait::class, RefreshDatabaseWithoutSeeding::class);
  *     bermakna setelah serialisasi JSON.
  *   - Buat parent ScreeningResult lewat factory untuk memenuhi FK.
  *   - Simpan PredictionResult, lalu muat ulang instans baru dari basis data
- *     (PredictionResult::find) dan pastikan setiap field setara.
+ *     (PredictionResult::find) dan pastikan setiap field setara serta
+ *     thalassemia_risk berdomain Istilah_Laporan.
  *
- * Prefiks unik PROP12_ dipakai untuk simbol lingkup-berkas guna menghindari
+ * Prefiks unik PROP2_ dipakai untuk simbol lingkup-berkas guna menghindari
  * tabrakan simbol global dengan berkas tes lain.
  */
+
+/**
+ * Domain Istilah_Laporan untuk Risiko_Thalassemia_Bayi (Req 1.1, 1.3).
+ *
+ * @var list<string>
+ */
+const PROP2_RISK_DOMAIN = ['Minor', 'Intermedia', 'Mayor'];
 
 /**
  * Variabel keluaran probabilitas pada Hasil_Prediksi (Req 4.3).
  *
  * @var list<string>
  */
-const PROP12_PROBABILITY_VARIABLES = [
+const PROP2_PROBABILITY_VARIABLES = [
     'baby_blood',
     'baby_iris',
     'baby_hair',
@@ -55,7 +65,7 @@ const PROP12_PROBABILITY_VARIABLES = [
  * Memilih pembilang bulat 0..N dengan penyebut tetap N sehingga nilai seperti
  * 0, 0.25, 1.0 tersimpan dan termuat persis sama (tanpa galat pembulatan).
  */
-function prop12ExactProbabilityGenerator(): Generator
+function prop2ExactProbabilityGenerator(): Generator
 {
     $denominator = 20;
 
@@ -69,7 +79,7 @@ function prop12ExactProbabilityGenerator(): Generator
  * Generator map kelas => float untuk satu variabel keluaran. Tiap variabel
  * mendapat beberapa kelas (2..4) dengan nama kelas acak non-kosong.
  */
-function prop12ClassProbabilityMapGenerator(): Generator
+function prop2ClassProbabilityMapGenerator(): Generator
 {
     return Generator\map(
         static function (array $pairs): array {
@@ -88,7 +98,7 @@ function prop12ClassProbabilityMapGenerator(): Generator
         Generator\seq(
             Generator\tuple(
                 Generator\string(),
-                prop12ExactProbabilityGenerator(),
+                prop2ExactProbabilityGenerator(),
             ),
         ),
     );
@@ -97,7 +107,7 @@ function prop12ClassProbabilityMapGenerator(): Generator
 /**
  * Generator map fisik: keempat kategori PhenotypeCategory => nilai string acak.
  */
-function prop12PhysicalGenerator(): Generator
+function prop2PhysicalGenerator(): Generator
 {
     $categories = array_map(
         static fn (PhenotypeCategory $category): string => $category->value,
@@ -126,34 +136,34 @@ function prop12PhysicalGenerator(): Generator
 /**
  * Generator map probabilitas bersarang: setiap variabel keluaran => map kelas.
  */
-function prop12ProbabilitiesGenerator(): Generator
+function prop2ProbabilitiesGenerator(): Generator
 {
     return Generator\map(
         static function (array $perVariable): array {
             $probabilities = [];
-            foreach (PROP12_PROBABILITY_VARIABLES as $index => $variable) {
+            foreach (PROP2_PROBABILITY_VARIABLES as $index => $variable) {
                 $probabilities[$variable] = $perVariable[$index] ?? [];
             }
 
             return $probabilities;
         },
         Generator\tuple(
-            prop12ClassProbabilityMapGenerator(),
-            prop12ClassProbabilityMapGenerator(),
-            prop12ClassProbabilityMapGenerator(),
-            prop12ClassProbabilityMapGenerator(),
-            prop12ClassProbabilityMapGenerator(),
+            prop2ClassProbabilityMapGenerator(),
+            prop2ClassProbabilityMapGenerator(),
+            prop2ClassProbabilityMapGenerator(),
+            prop2ClassProbabilityMapGenerator(),
+            prop2ClassProbabilityMapGenerator(),
         ),
     );
 }
 
-// Feature: genetikaku-expert-system, Property 12: Penyimpanan Hasil_Prediksi round trip
-it('menyimpan lalu memuat Hasil_Prediksi mengembalikan data setara', function () {
+// Feature: report-alignment, Property 2: Risiko_Thalassemia_Bayi round-trip dan berdomain Istilah_Laporan
+it('menyimpan lalu memuat Risiko_Thalassemia_Bayi mengembalikan nilai identik dan berdomain Istilah_Laporan', function () {
     // Eris default 100 iterasi (lihat Eris\TestTrait::$iterations).
     $this->forAll(
-        prop12PhysicalGenerator(),
+        prop2PhysicalGenerator(),
         Generator\elements(...ThalassemiaRisk::cases()),
-        prop12ProbabilitiesGenerator(),
+        prop2ProbabilitiesGenerator(),
     )
         ->then(function (array $physical, ThalassemiaRisk $thalassemiaRisk, array $probabilities) {
             // Mulai dari state bersih tiap iterasi agar tabel terkontrol.
@@ -180,8 +190,11 @@ it('menyimpan lalu memuat Hasil_Prediksi mengembalikan data setara', function ()
             // Struktur fisik harus setara secara mendalam.
             expect($loaded->physical_result)->toEqual($physical);
 
-            // Risiko Thalassemia kembali sebagai enum yang sama.
+            // Risiko Thalassemia kembali sebagai enum yang sama (round-trip).
             expect($loaded->thalassemia_risk)->toBe($thalassemiaRisk);
+
+            // Nilai tersimpan selalu berdomain Istilah_Laporan {Minor, Intermedia, Mayor}.
+            expect($loaded->thalassemia_risk->value)->toBeIn(PROP2_RISK_DOMAIN);
 
             // Struktur probabilitas bersarang harus setara secara mendalam.
             expect($loaded->probabilities)->toEqual($probabilities);

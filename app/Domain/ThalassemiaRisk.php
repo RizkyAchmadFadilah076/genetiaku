@@ -4,7 +4,7 @@ namespace App\Domain;
 
 enum ThalassemiaRisk: string
 {
-    case Rendah = 'Rendah';
-    case Sedang = 'Sedang';
-    case Tinggi = 'Tinggi';
+    case Minor = 'Minor';
+    case Intermedia = 'Intermedia';
+    case Mayor = 'Mayor';
 }

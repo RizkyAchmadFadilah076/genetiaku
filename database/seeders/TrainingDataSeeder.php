@@ -20,8 +20,8 @@ class TrainingDataSeeder extends Seeder
         $iris = ['Cokelat', 'Hitam', 'Biru', 'Hijau'];
         $hair = ['Lurus', 'Bergelombang', 'Keriting'];
         $ear = ['Melekat', 'Terpisah'];
-        $screening = ['Normal', 'Carrier', 'Berisiko Tinggi'];
-        $severity = ['Normal' => 0, 'Carrier' => 1, 'Berisiko Tinggi' => 2];
+        $screening = ['Normal', 'Carrier', 'Penderita'];
+        $severity = ['Normal' => 0, 'Carrier' => 1, 'Penderita' => 2];
 
         $rows = [];
 
@@ -106,9 +106,9 @@ class TrainingDataSeeder extends Seeder
     private function riskFor(int $severitySum): string
     {
         return match (true) {
-            $severitySum <= 1 => 'Rendah',
-            $severitySum === 2 => 'Sedang',
-            default => 'Tinggi',
+            $severitySum <= 1 => 'Minor',
+            $severitySum === 2 => 'Intermedia',
+            default => 'Mayor',
         };
     }
 }

@@ -23,9 +23,9 @@ interface IndexProps {
 }
 
 const RISK_BADGE: Record<string, string> = {
-    Rendah: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
-    Sedang: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
-    Tinggi: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200',
+    Minor: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
+    Intermedia: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
+    Mayor: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200',
 };
 
 function formatDate(value: string | null): string {

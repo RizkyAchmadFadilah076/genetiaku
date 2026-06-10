@@ -9,7 +9,7 @@ use App\Domain\ScreeningCategory;
  * Mesin_Skrining (Tahap 1).
  *
  * Memetakan jawaban Indikator_Skrining seorang orang tua ke tepat satu
- * Hasil_Skrining_Orang_Tua (`Normal`, `Carrier`, `Berisiko Tinggi`)
+ * Hasil_Skrining_Orang_Tua (`Normal`, `Carrier`, `Penderita`)
  * berdasarkan Basis_Pengetahuan (Req 1.2, 1.3, 12.2).
  *
  * Kelas ini MURNI: tidak menyentuh database/HTTP. Seluruh masukan diberikan
@@ -21,23 +21,23 @@ use App\Domain\ScreeningCategory;
  *   - `weight`               : kontribusi skor saat indikator dijawab "ya".
  *   - `classificationMapping`: kategori yang DIINDIKASIKAN bila indikator
  *                              tersebut dijawab afirmatif, salah satu dari
- *                              `Normal` | `Carrier` | `Berisiko Tinggi`.
+ *                              `Normal` | `Carrier` | `Penderita`.
  *
  * `classificationMapping` menyatakan tingkat kategori yang diisyaratkan oleh
  * indikator tersebut bila dijawab "ya". Indikator kuat (mis. riwayat diagnosis
- * atau riwayat transfusi) dipetakan ke `Berisiko Tinggi`; indikator pendukung
+ * atau riwayat transfusi) dipetakan ke `Penderita`; indikator pendukung
  * (mis. riwayat keluarga, anemia, kadar Hb rendah) dipetakan ke `Carrier`.
  *
  * ## Algoritma `classify`
- *   1. Bila ADA indikator ber-mapping `Berisiko Tinggi` yang dijawab afirmatif
- *      -> langsung `Berisiko Tinggi` (indikator kuat bersifat menentukan).
+ *   1. Bila ADA indikator ber-mapping `Penderita` yang dijawab afirmatif
+ *      -> langsung `Penderita` (indikator kuat bersifat menentukan).
  *   2. Selain itu, jumlahkan `weight` indikator ber-mapping `Carrier` yang
  *      dijawab afirmatif. Bila skornya >= `carrierThreshold` (bobot terkecil di
  *      antara aturan `Carrier`) -> `Carrier`.
  *   3. Selain itu -> `Normal`.
  *
  * Dengan demikian, mengiyakan beberapa indikator pendukung (carrier) TIDAK
- * lagi otomatis menjadi `Berisiko Tinggi`; hanya indikator kuat yang menentukan
+ * lagi otomatis menjadi `Penderita`; hanya indikator kuat yang menentukan
  * kategori tertinggi.
  *
  * Fungsi selalu mengembalikan tepat satu {@see ScreeningCategory} dan
@@ -64,7 +64,7 @@ final class ScreeningEngine
             $mapping = $this->normalizeCategory($rule->classificationMapping);
             $affirmative = $this->isAffirmative($answers[$rule->indicator] ?? null);
 
-            if ($mapping === ScreeningCategory::BerisikoTinggi) {
+            if ($mapping === ScreeningCategory::Penderita) {
                 if ($affirmative) {
                     $hasHighRiskIndicator = true;
                 }
@@ -78,7 +78,7 @@ final class ScreeningEngine
         }
 
         if ($hasHighRiskIndicator) {
-            return ScreeningCategory::BerisikoTinggi;
+            return ScreeningCategory::Penderita;
         }
 
         if ($carrierThreshold !== null && $carrierScore >= $carrierThreshold) {
@@ -124,7 +124,7 @@ final class ScreeningEngine
         return match ($normalized) {
             'normal' => ScreeningCategory::Normal,
             'carrier' => ScreeningCategory::Carrier,
-            'berisiko tinggi' => ScreeningCategory::BerisikoTinggi,
+            'penderita' => ScreeningCategory::Penderita,
             default => ScreeningCategory::tryFrom($mapping),
         };
     }

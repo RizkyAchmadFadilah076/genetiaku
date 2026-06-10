@@ -80,7 +80,7 @@ function prop13ValidPayload(): array
         'baby_iris' => $iris,
         'baby_hair' => $hair,
         'baby_ear' => $ear,
-        'baby_thalassemia_risk' => ThalassemiaRisk::Rendah->value,
+        'baby_thalassemia_risk' => ThalassemiaRisk::Minor->value,
     ];
 }
 

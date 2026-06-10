@@ -20,9 +20,9 @@ const NB_P6_IRIS = ['Cokelat', 'Biru'];
 const NB_P6_HAIR = ['Lurus', 'Keriting'];
 const NB_P6_EAR = ['Menempel', 'Terpisah'];
 // Atribut masukan father/mother_thalassemia memakai kategori Hasil_Skrining_Orang_Tua.
-const NB_P6_THAL_INPUT = ['Normal', 'Carrier', 'Berisiko Tinggi'];
+const NB_P6_THAL_INPUT = ['Normal', 'Carrier', 'Penderita'];
 // Variabel keluaran baby_thalassemia_risk memakai kategori Risiko_Thalassemia_Bayi.
-const NB_P6_THAL_RISK = ['Rendah', 'Sedang', 'Tinggi'];
+const NB_P6_THAL_RISK = ['Minor', 'Intermedia', 'Mayor'];
 
 /*
  * Urutan 10 atribut masukan, dipakai konsisten saat memilih nilai input dari
@@ -77,7 +77,7 @@ it('memilih kelas dengan skor posterior maksimum untuk setiap variabel keluaran'
         if ($rows === []) {
             $rows = [['A', 'Cokelat', 'Lurus', 'Menempel', 'Normal',
                 'B', 'Biru', 'Keriting', 'Terpisah', 'Carrier',
-                'A', 'Cokelat', 'Lurus', 'Menempel', 'Rendah']];
+                'A', 'Cokelat', 'Lurus', 'Menempel', 'Minor']];
         }
 
         $fields = [

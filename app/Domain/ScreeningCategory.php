@@ -6,5 +6,5 @@ enum ScreeningCategory: string
 {
     case Normal = 'Normal';
     case Carrier = 'Carrier';
-    case BerisikoTinggi = 'Berisiko Tinggi';
+    case Penderita = 'Penderita';
 }

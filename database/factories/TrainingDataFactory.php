@@ -41,13 +41,13 @@ class TrainingDataFactory extends Factory
         $screening = [
             ScreeningCategory::Normal->value,
             ScreeningCategory::Carrier->value,
-            ScreeningCategory::BerisikoTinggi->value,
+            ScreeningCategory::Penderita->value,
         ];
 
         $risk = [
-            ThalassemiaRisk::Rendah->value,
-            ThalassemiaRisk::Sedang->value,
-            ThalassemiaRisk::Tinggi->value,
+            ThalassemiaRisk::Minor->value,
+            ThalassemiaRisk::Intermedia->value,
+            ThalassemiaRisk::Mayor->value,
         ];
 
         return [

@@ -72,7 +72,7 @@ function e2eSeedPrerequisites(): void
             'mother_blood' => 'B', 'mother_iris' => 'Hitam', 'mother_hair' => 'Keriting', 'mother_ear' => 'Terpisah',
             'mother_thalassemia' => ScreeningCategory::Normal->value,
             'baby_blood' => 'A', 'baby_iris' => 'Cokelat', 'baby_hair' => 'Lurus', 'baby_ear' => 'Menempel',
-            'baby_thalassemia_risk' => ThalassemiaRisk::Sedang->value,
+            'baby_thalassemia_risk' => ThalassemiaRisk::Intermedia->value,
         ],
         [
             'father_blood' => 'B', 'father_iris' => 'Hitam', 'father_hair' => 'Keriting', 'father_ear' => 'Terpisah',
@@ -80,15 +80,15 @@ function e2eSeedPrerequisites(): void
             'mother_blood' => 'A', 'mother_iris' => 'Cokelat', 'mother_hair' => 'Lurus', 'mother_ear' => 'Menempel',
             'mother_thalassemia' => ScreeningCategory::Normal->value,
             'baby_blood' => 'B', 'baby_iris' => 'Hitam', 'baby_hair' => 'Keriting', 'baby_ear' => 'Terpisah',
-            'baby_thalassemia_risk' => ThalassemiaRisk::Rendah->value,
+            'baby_thalassemia_risk' => ThalassemiaRisk::Minor->value,
         ],
         [
             'father_blood' => 'A', 'father_iris' => 'Hitam', 'father_hair' => 'Lurus', 'father_ear' => 'Terpisah',
-            'father_thalassemia' => ScreeningCategory::BerisikoTinggi->value,
+            'father_thalassemia' => ScreeningCategory::Penderita->value,
             'mother_blood' => 'B', 'mother_iris' => 'Cokelat', 'mother_hair' => 'Keriting', 'mother_ear' => 'Menempel',
             'mother_thalassemia' => ScreeningCategory::Carrier->value,
             'baby_blood' => 'A', 'baby_iris' => 'Hitam', 'baby_hair' => 'Lurus', 'baby_ear' => 'Menempel',
-            'baby_thalassemia_risk' => ThalassemiaRisk::Tinggi->value,
+            'baby_thalassemia_risk' => ThalassemiaRisk::Mayor->value,
         ],
     ];
 
@@ -198,7 +198,7 @@ it('menelusuri alur skrining -> prediksi -> hasil -> cetak via HTTP/Inertia', fu
         }
 
         // Req 4.2: Risiko_Thalassemia_Bayi tepat satu klasifikasi valid.
-        expect(in_array($props['thalassemiaRisk'] ?? null, ['Rendah', 'Sedang', 'Tinggi'], true))->toBeTrue();
+        expect(in_array($props['thalassemiaRisk'] ?? null, ['Minor', 'Intermedia', 'Mayor'], true))->toBeTrue();
 
         // Req 4.3: probabilitas posterior disertakan.
         expect($props['probabilities'] ?? null)->toBeArray()->not->toBeEmpty();
@@ -233,7 +233,7 @@ it('menelusuri alur skrining -> prediksi -> hasil -> cetak via HTTP/Inertia', fu
             expect(array_key_exists($category->value, $physical))->toBeTrue();
         }
 
-        expect(in_array($props['thalassemiaRisk'] ?? null, ['Rendah', 'Sedang', 'Tinggi'], true))->toBeTrue();
+        expect(in_array($props['thalassemiaRisk'] ?? null, ['Minor', 'Intermedia', 'Mayor'], true))->toBeTrue();
         expect($props['probabilities'] ?? null)->toBeArray()->not->toBeEmpty();
 
         $education = $props['education'] ?? null;

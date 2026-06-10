@@ -14,7 +14,7 @@ uses(TestTrait::class);
  * Property 8 menguji bahwa keluaran prediksi bersifat total: untuk setiap input
  * valid dan Data_Latih tidak kosong, PredictionOutcome memuat prediksi untuk
  * keempat kategori fisik dengan nilai yang terdaftar pada Data_Latih, dan
- * Risiko_Thalassemia_Bayi tepat satu dari {Rendah, Sedang, Tinggi}.
+ * Risiko_Thalassemia_Bayi tepat satu dari {Minor, Intermedia, Mayor}.
  *
  * CATATAN simbol global: berkas property NB lain mendeklarasikan const/ fungsi
  * global (mis. NB_BLOODS, NB_OUTPUT_VARIABLES, nbTrainingRowGenerator()). Untuk
@@ -29,9 +29,9 @@ const NB_P8_IRIS = ['Cokelat', 'Hitam', 'Biru'];
 const NB_P8_HAIR = ['Lurus', 'Ikal', 'Keriting'];
 const NB_P8_EAR = ['Menempel', 'Menggantung'];
 // Atribut masukan father/mother_thalassemia memakai kategori Hasil_Skrining_Orang_Tua.
-const NB_P8_THAL_INPUT = ['Normal', 'Carrier', 'Berisiko Tinggi'];
+const NB_P8_THAL_INPUT = ['Normal', 'Carrier', 'Penderita'];
 // Variabel keluaran baby_thalassemia_risk memakai kategori Risiko_Thalassemia_Bayi.
-const NB_P8_THAL_RISK = ['Rendah', 'Sedang', 'Tinggi'];
+const NB_P8_THAL_RISK = ['Minor', 'Intermedia', 'Mayor'];
 
 // Urutan 15 kolom satu baris training (10 atribut masukan + 5 variabel keluaran).
 const NB_P8_FIELDS = [
@@ -129,7 +129,7 @@ it('menghasilkan prediksi lengkap empat kategori fisik dan klasifikasi risiko to
             expect($observedBaby[$column])->toContain($predictedValue);
         }
 
-        // Req 4.2: Risiko_Thalassemia_Bayi tepat satu dari {Rendah, Sedang, Tinggi}.
+        // Req 4.2: Risiko_Thalassemia_Bayi tepat satu dari {Minor, Intermedia, Mayor}.
         expect($outcome->thalassemiaRisk)->toBeInstanceOf(ThalassemiaRisk::class);
         expect(ThalassemiaRisk::cases())->toContain($outcome->thalassemiaRisk);
         expect(NB_P8_THAL_RISK)->toContain($outcome->thalassemiaRisk->value);

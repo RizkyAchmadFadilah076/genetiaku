@@ -37,8 +37,8 @@ defined('NB_BLOODS') || define('NB_BLOODS', ['A', 'B', 'AB', 'O']);
 defined('NB_IRIS') || define('NB_IRIS', ['Cokelat', 'Hitam', 'Biru']);
 defined('NB_HAIR') || define('NB_HAIR', ['Lurus', 'Ikal', 'Keriting']);
 defined('NB_EAR') || define('NB_EAR', ['Menempel', 'Menggantung']);
-defined('NB_THALASSEMIA') || define('NB_THALASSEMIA', ['Normal', 'Carrier', 'Berisiko Tinggi']); // ScreeningCategory values
-defined('NB_RISK') || define('NB_RISK', ['Rendah', 'Sedang', 'Tinggi']);
+defined('NB_THALASSEMIA') || define('NB_THALASSEMIA', ['Normal', 'Carrier', 'Penderita']); // ScreeningCategory values
+defined('NB_RISK') || define('NB_RISK', ['Minor', 'Intermedia', 'Mayor']);
 
 /*
  * Variabel keluaran Mesin_Naive_Bayes (lihat TrainingRow::outputClasses()).

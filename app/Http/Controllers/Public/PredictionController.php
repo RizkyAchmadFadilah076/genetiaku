@@ -89,6 +89,8 @@ class PredictionController extends Controller
                 'mother_name' => $screening->mother_name,
                 'father_result' => $screening->father_result->value,
                 'mother_result' => $screening->mother_result->value,
+                'father_indicators' => $screening->father_indicators ?? [],
+                'mother_indicators' => $screening->mother_indicators ?? [],
             ],
             
             'education' => $this->educationalContent(),
@@ -116,6 +118,8 @@ class PredictionController extends Controller
                 'mother_name' => $screening->mother_name,
                 'father_result' => $screening->father_result->value,
                 'mother_result' => $screening->mother_result->value,
+                'father_indicators' => $screening->father_indicators ?? [],
+                'mother_indicators' => $screening->mother_indicators ?? [],
             ],
             
             'education' => $this->educationalContent(),
@@ -161,6 +165,9 @@ class PredictionController extends Controller
             'result_explanation' => 'Hasil prediksi diperoleh dengan metode Naive Bayes berdasarkan data latih yang tersedia. Nilai probabilitas menunjukkan tingkat keyakinan model terhadap setiap kemungkinan karakteristik, bukan kepastian.',
             'thalassemia_info' => 'Thalassemia adalah kelainan darah genetik yang diturunkan dari orang tua kepada anak. Orang tua yang berstatus pembawa sifat (carrier) umumnya tidak bergejala, namun tetap dapat menurunkan risiko kepada bayi. Memahami status risiko membantu perencanaan kehamilan yang lebih siap.',
             'follow_up_advice' => 'Untuk memastikan kondisi sebenarnya, lakukan pemeriksaan laboratorium seperti hitung darah lengkap dan analisis hemoglobin, serta konsultasikan hasil ini dengan dokter atau konselor genetik sebelum mengambil keputusan.',
+            'method_explanation' => 'Prediksi karakteristik fisik (Golongan Darah, Tekstur Rambut, Warna Iris Mata, Bentuk Cuping Telinga) dan Risiko Thalassemia dihitung dengan metode Naive Bayes atas Data Latih fenotipe. Sistem tidak memodelkan genotipe/alel maupun melakukan perhitungan Punnett; setiap keluaran diperoleh dari probabilitas posterior berdasarkan pola yang terekam pada Data Latih.',
+            'mendel_basis' => 'Data Latih mencerminkan pola pewarisan menurut Hukum Mendel (misalnya, persilangan Carrier x Carrier memberi kemungkinan 25% Normal, 50% Carrier, dan 25% Mayor untuk Thalassemia). Hukum Mendel II (asortasi bebas) berperan sebagai landasan teori variasi fenotipe dan dasar penyusunan Data Latih, BUKAN sebagai mesin pemetaan kombinasi gen ataupun diagram Punnett.',
+            'two_stage_flow' => 'Prediksi berjalan dalam dua tahap. Tahap 1: Mesin Skrining berbasis aturan (Basis Pengetahuan) mengklasifikasikan tiap orang tua menjadi Hasil Skrining Orang Tua (Normal, Carrier, atau Penderita). Tahap 2: Mesin Naive Bayes memakai hasil skrining tersebut bersama atribut fenotipe sebagai masukan untuk menghasilkan kelima Kategori Keluaran. Istilah Basis Pengetahuan hanya merujuk pada aturan skrining Tahap 1, bukan mekanisme prediksi karakteristik fisik.',
         ];
     }
 

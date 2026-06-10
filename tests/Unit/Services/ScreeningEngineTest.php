@@ -22,7 +22,7 @@ const SCREENING_INDICATORS = [
     'gejala_pendukung',
 ];
 
-const SCREENING_MAPPINGS = ['Normal', 'Carrier', 'Berisiko Tinggi'];
+const SCREENING_MAPPINGS = ['Normal', 'Carrier', 'Penderita'];
 
 // Feature: genetikaku-expert-system, Property 1: Klasifikasi skrining bersifat total dan deterministik
 it('mengklasifikasikan jawaban lengkap secara total dan deterministik', function () {
@@ -59,7 +59,7 @@ it('mengklasifikasikan jawaban lengkap secara total dan deterministik', function
         expect([
             ScreeningCategory::Normal,
             ScreeningCategory::Carrier,
-            ScreeningCategory::BerisikoTinggi,
+            ScreeningCategory::Penderita,
         ])->toContain($result);
 
         // Determinisme / idempotensi: pemanggilan berulang dengan input identik

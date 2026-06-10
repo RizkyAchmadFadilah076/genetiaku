@@ -20,8 +20,8 @@ const NB_P9_BLOOD = ['A', 'B', 'O'];
 const NB_P9_IRIS = ['Cokelat', 'Hitam'];
 const NB_P9_HAIR = ['Lurus', 'Keriting'];
 const NB_P9_EAR = ['Menggantung', 'Menempel'];
-const NB_P9_THAL_INPUT = ['Normal', 'Carrier', 'Berisiko Tinggi']; // ScreeningCategory
-const NB_P9_THAL_RISK = ['Rendah', 'Sedang', 'Tinggi'];            // ThalassemiaRisk
+const NB_P9_THAL_INPUT = ['Normal', 'Carrier', 'Penderita']; // ScreeningCategory
+const NB_P9_THAL_RISK = ['Minor', 'Intermedia', 'Mayor'];    // ThalassemiaRisk
 
 // Feature: genetikaku-expert-system, Property 9: Naive Bayes menolak nilai atribut tak terdaftar
 it('menolak input dengan nilai atribut yang tidak terdaftar pada Data_Latih', function () {
@@ -68,7 +68,7 @@ it('menolak input dengan nilai atribut yang tidak terdaftar pada Data_Latih', fu
         ->then(function (array $rowTuples, array $selectors, int $corruptIndex, int $nonce) use ($classifier) {
             // Property mensyaratkan Data_Latih tidak kosong: jamin minimal satu baris.
             if ($rowTuples === []) {
-                $rowTuples = [['A', 'Cokelat', 'Lurus', 'Menggantung', 'Normal', 'B', 'Hitam', 'Keriting', 'Menempel', 'Carrier', 'O', 'Cokelat', 'Lurus', 'Menempel', 'Rendah']];
+                $rowTuples = [['A', 'Cokelat', 'Lurus', 'Menggantung', 'Normal', 'B', 'Hitam', 'Keriting', 'Menempel', 'Carrier', 'O', 'Cokelat', 'Lurus', 'Menempel', 'Minor']];
             }
 
             /** @var list<TrainingRow> $training */

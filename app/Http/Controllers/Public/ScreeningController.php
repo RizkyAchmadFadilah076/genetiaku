@@ -43,14 +43,19 @@ class ScreeningController extends Controller
 
         $rules = $this->loadRules();
 
-        $fatherResult = $engine->classify($this->mapAnswers($validated['father'] ?? []), $rules);
-        $motherResult = $engine->classify($this->mapAnswers($validated['mother'] ?? []), $rules);
+        $fatherAnswers = $this->mapAnswers($validated['father'] ?? []);
+        $motherAnswers = $this->mapAnswers($validated['mother'] ?? []);
+
+        $fatherResult = $engine->classify($fatherAnswers, $rules);
+        $motherResult = $engine->classify($motherAnswers, $rules);
 
         $result = ScreeningResult::query()->create([
             'father_name' => $validated['father_name'],
             'mother_name' => $validated['mother_name'],
             'father_result' => $fatherResult,
             'mother_result' => $motherResult,
+            'father_indicators' => $this->selectedIndicators($validated['father'] ?? []),
+            'mother_indicators' => $this->selectedIndicators($validated['mother'] ?? []),
         ]);
 
         $request->session()->put(self::SESSION_KEY, $result->id);
@@ -88,5 +93,25 @@ class ScreeningController extends Controller
         }
 
         return $mapped;
+    }
+
+    /**
+     * Ambil daftar label indikator yang dijawab afirmatif ("ya") oleh seorang
+     * orang tua, sebagai snapshot untuk ditampilkan kembali pada hasil/cetak.
+     *
+     * @param  array<string,mixed>  $answers  Jawaban indikator dikunci slug.
+     * @return list<string>
+     */
+    private function selectedIndicators(array $answers): array
+    {
+        $selected = [];
+
+        foreach (ScreeningIndicators::map() as $key => $label) {
+            if (filter_var($answers[$key] ?? false, FILTER_VALIDATE_BOOLEAN)) {
+                $selected[] = $label;
+            }
+        }
+
+        return $selected;
     }
 }

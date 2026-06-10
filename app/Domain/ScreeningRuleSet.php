@@ -6,10 +6,10 @@ namespace App\Domain;
 final class ScreeningRuleSet{
     private const RULES = [
         ['Riwayat keluarga Thalassemia', 2, 'Carrier'],
-        ['Riwayat diagnosis Thalassemia', 5, 'Berisiko Tinggi'],
+        ['Riwayat diagnosis Thalassemia', 5, 'Penderita'],
         ['Riwayat anemia', 1, 'Carrier'],
         ['Kadar Hb rendah', 1, 'Carrier'],
-        ['Riwayat transfusi darah', 3, 'Berisiko Tinggi'],
+        ['Riwayat transfusi darah', 3, 'Penderita'],
         ['Gejala pendukung lainnya', 1, 'Normal'],
     ];
 
