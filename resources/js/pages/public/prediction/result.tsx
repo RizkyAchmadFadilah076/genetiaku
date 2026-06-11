@@ -21,7 +21,6 @@ import PublicLayout from '@/layouts/public-layout';
 import { addPredictionSessionEntry } from '@/lib/prediction-session-history';
 import { cn } from '@/lib/utils';
 
-/** Hasil_Skrining Tahap 1 terkait (konteks). */
 interface ScreeningSummary {
     father_name: string;
     mother_name: string;
@@ -31,7 +30,6 @@ interface ScreeningSummary {
     mother_indicators: string[];
 }
 
-/** Konten edukasi yang menyertai hasil (Req 4.4). */
 interface EducationContent {
     result_explanation: string;
     thalassemia_info: string;
@@ -59,7 +57,6 @@ const VARIABLE_LABELS: Record<string, string> = {
     baby_thalassemia_risk: 'Risiko Thalassemia',
 };
 
-/** Ikon per kategori karakteristik fisik. */
 const PHYSICAL_ICONS: Record<string, LucideIcon> = {
     'Golongan Darah': Droplet,
     'Warna Iris Mata': Eye,
@@ -72,7 +69,6 @@ const variableLabel = (key: string): string =>
 
 const toPercent = (value: number): number => Math.round(value * 1000) / 10;
 
-/** Gaya badge & deskripsi berdasarkan klasifikasi risiko. */
 const riskMeta = (
     risk: string,
 ): {
@@ -113,7 +109,6 @@ const riskMeta = (
     }
 };
 
-/** Ringkasan singkat ketiga tingkat risiko untuk konteks pembanding. */
 const RISK_LEVEL_LEGEND: { label: string; dot: string; desc: string }[] = [
     {
         label: 'Minor',
@@ -132,7 +127,6 @@ const RISK_LEVEL_LEGEND: { label: string; dot: string; desc: string }[] = [
     },
 ];
 
-/** Gaya badge Hasil_Skrining_Orang_Tua (Normal/Carrier/Penderita). */
 const screeningBadge = (result: string): string => {
     switch (result) {
         case 'Penderita':
@@ -144,7 +138,6 @@ const screeningBadge = (result: string): string => {
     }
 };
 
-/** Kartu ringkasan skrining satu orang tua: nama, hasil, indikator dipilih. */
 function ScreeningParentCard({
     name,
     result,
@@ -195,7 +188,6 @@ function ScreeningParentCard({
     );
 }
 
-/** Kartu seksi dengan judul beraksen ikon. */
 function SectionCard({
     icon: Icon,
     title,
@@ -226,19 +218,10 @@ function SectionCard({
 }
 
 const EDUCATION_ITEMS: { key: keyof EducationContent; title: string }[] = [
-    // { key: 'method_explanation', title: 'Metode Naive Bayes' },
-    // { key: 'two_stage_flow', title: 'Alur Dua Tahap' },
     { key: 'mendel_basis', title: 'Dasar Hukum Mendel' },
     { key: 'result_explanation', title: 'Penjelasan Hasil' },
     { key: 'thalassemia_info', title: 'Tentang Thalassemia' },
     { key: 'follow_up_advice', title: 'Saran Pemeriksaan Lanjutan' },
-];
-
-const METHOD_STEPS = [
-    { title: 'Prior', desc: 'Peluang awal tiap kemungkinan dari frekuensinya pada data latih.' },
-    { title: 'Likelihood', desc: 'Peluang tiap fenotipe orang tua, dihaluskan dengan teknik Laplace.' },
-    { title: 'Posterior', desc: 'Prior dikalikan likelihood, lalu dinormalisasi jadi persentase.' },
-    { title: 'Keputusan', desc: 'Kemungkinan dengan posterior tertinggi dipilih sebagai prediksi.' },
 ];
 
 export default function PredictionResultPage({
@@ -267,7 +250,6 @@ export default function PredictionResultPage({
             <Head title="Hasil Prediksi" />
 
             <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
-                {/* Hero */}
                 <header className="overflow-hidden rounded-3xl border border-rose-100 bg-gradient-to-br from-rose-50 via-white to-violet-50 p-6 shadow-sm sm:p-8 dark:border-neutral-800 dark:from-neutral-900 dark:via-neutral-950 dark:to-neutral-900">
                     <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-start gap-4">
@@ -322,7 +304,6 @@ export default function PredictionResultPage({
                 </header>
 
                 <div className="mt-6 space-y-6">
-                    {/* Hasil Skrining Orang Tua (Tahap 1) — konteks sebelum hasil bayi */}
                     <SectionCard
                         icon={Users}
                         title="Hasil Skrining Orang Tua (Tahap 1)"
@@ -345,7 +326,6 @@ export default function PredictionResultPage({
                         </div>
                     </SectionCard>
 
-                    {/* Risiko Thalassemia — kartu menonjol */}
                     <section
                         className={cn(
                             'rounded-2xl border bg-gradient-to-br p-5 shadow-sm sm:p-6',
@@ -376,13 +356,11 @@ export default function PredictionResultPage({
                             </span>
                         </div>
 
-                        {/* Penjelasan arti tingkat risiko hasil prediksi */}
                         <p className="mt-4 rounded-xl bg-white/60 p-3 text-sm leading-relaxed text-slate-700 dark:bg-neutral-900/50 dark:text-neutral-200">
                             <span className="font-semibold">Apa arti "{thalassemiaRisk}"? </span>
                             {risk.meaning}
                         </p>
 
-                        {/* Legenda ketiga tingkat sebagai pembanding */}
                         <dl className="mt-3 grid gap-2 sm:grid-cols-3">
                             {RISK_LEVEL_LEGEND.map((level) => (
                                 <div
@@ -412,11 +390,11 @@ export default function PredictionResultPage({
                         </dl>
                     </section>
 
-                    {/* Karakteristik fisik bayi */}
                     <SectionCard icon={Baby} title="Karakteristik Fisik Bayi">
                         <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             {Object.entries(physical).map(([category, value]) => {
                                 const Icon = PHYSICAL_ICONS[category] ?? Sparkles;
+
                                 return (
                                     <div
                                         key={category}
@@ -439,7 +417,6 @@ export default function PredictionResultPage({
                         </dl>
                     </SectionCard>
 
-                    {/* Probabilitas */}
                     <SectionCard icon={Workflow} title="Probabilitas Prediksi">
                         <p className="-mt-2 mb-4 text-sm text-slate-600 dark:text-neutral-400">
                             Tingkat keyakinan model terhadap setiap kemungkinan.
@@ -455,6 +432,7 @@ export default function PredictionResultPage({
                                             .sort(([, a], [, b]) => b - a)
                                             .map(([className, probability], index) => {
                                                 const percent = toPercent(probability);
+
                                                 return (
                                                     <li key={className}>
                                                         <div className="flex items-center justify-between text-sm">
@@ -492,33 +470,6 @@ export default function PredictionResultPage({
                         </div>
                     </SectionCard>
 
-                    {/* Cara kerja Naive Bayes */}
-                    {/* <SectionCard icon={Workflow} title="Cara Kerja Prediksi (Naive Bayes)">
-                        <p className="-mt-2 text-sm leading-relaxed text-slate-600 dark:text-neutral-300">
-                            Prediksi dihitung dengan algoritma Naive Bayes dari data latih: fenotipe
-                            ayah &amp; ibu ditambah hasil skrining Thalassemia kedua orang tua (Tahap 1).
-                        </p>
-                        <ol className="mt-4 grid gap-3 sm:grid-cols-2">
-                            {METHOD_STEPS.map((step, index) => (
-                                <li
-                                    key={step.title}
-                                    className="flex gap-3 rounded-xl border border-violet-100 bg-violet-50/50 p-3 dark:border-neutral-800 dark:bg-neutral-900/40"
-                                >
-                                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-200 text-xs font-bold text-violet-700 dark:bg-violet-900 dark:text-violet-200">
-                                        {index + 1}
-                                    </span>
-                                    <span className="text-sm text-slate-600 dark:text-neutral-300">
-                                        <span className="font-semibold text-slate-800 dark:text-neutral-100">
-                                            {step.title}
-                                        </span>{' '}
-                                        — {step.desc}
-                                    </span>
-                                </li>
-                            ))}
-                        </ol>
-                    </SectionCard> */}
-
-                    {/* Edukasi */}
                     <SectionCard icon={BookOpen} title="Edukasi">
                         <div className="space-y-4">
                             {EDUCATION_ITEMS.map((item) => (
@@ -534,7 +485,6 @@ export default function PredictionResultPage({
                         </div>
                     </SectionCard>
 
-                    {/* Disclaimer */}
                     <section
                         aria-label="Pernyataan penyangkalan"
                         className="flex gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-200"

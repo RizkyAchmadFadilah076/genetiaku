@@ -31,6 +31,7 @@ export function addPredictionSessionEntry(
 
     if (existingIndex >= 0) {
         entries[existingIndex] = nextEntry;
+
         return;
     }
 

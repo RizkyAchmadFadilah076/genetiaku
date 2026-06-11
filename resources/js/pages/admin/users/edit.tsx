@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import type { BreadcrumbItem } from '@/types';
-import UserForm, { type UserRow } from './user-form';
+import UserForm from './user-form';
+import type {UserRow} from './user-form';
 
 interface UsersEditProps {
     user: UserRow;

@@ -5,19 +5,16 @@ namespace App\Domain;
 final readonly class TrainingRow
 {
     public function __construct(
-        // Atribut masukan — ayah
         public string $fatherBlood,
         public string $fatherIris,
         public string $fatherHair,
         public string $fatherEar,
         public string $fatherThalassemia,
-        // Atribut masukan — ibu
         public string $motherBlood,
         public string $motherIris,
         public string $motherHair,
         public string $motherEar,
         public string $motherThalassemia,
-        // Variabel keluaran — bayi
         public string $babyBlood,
         public string $babyIris,
         public string $babyHair,
@@ -25,11 +22,7 @@ final readonly class TrainingRow
         public string $babyThalassemiaRisk,
     ) {}
 
-    /**
-     * Buat TrainingRow dari array asosiatif (mis. baris Eloquent/array DB).
-     *
-     * @param  array<string,string>  $attributes
-     */
+    /** @param  array<string,string>  $attributes */
     public static function fromArray(array $attributes): self
     {
         return new self(
@@ -51,11 +44,7 @@ final readonly class TrainingRow
         );
     }
 
-    /**
-     * Atribut masukan (fitur) baris ini sebagai map kunci=>nilai.
-     *
-     * @return array<string,string>
-     */
+    /** @return array<string,string> */
     public function inputAttributes(): array
     {
         return [
@@ -72,11 +61,7 @@ final readonly class TrainingRow
         ];
     }
 
-    /**
-     * Variabel keluaran (kelas target) baris ini sebagai map kunci=>nilai.
-     *
-     * @return array<string,string>
-     */
+    /** @return array<string,string> */
     public function outputClasses(): array
     {
         return [

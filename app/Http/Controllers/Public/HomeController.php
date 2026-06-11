@@ -8,15 +8,6 @@ use Inertia\Response;
 
 class HomeController extends Controller
 {
-    /**
-     * Tampilkan halaman utama publik GENETIKAKU.
-     *
-     * Mengirim penjelasan ringkas sistem, sorotan alur empat tahap,
-     * dan pernyataan penyangkalan (disclaimer). Prop `disclaimerAvailable`
-     * memberi sinyal ke halaman apakah disclaimer tersedia untuk dirender,
-     * sehingga tautan masuk ke alur skrining hanya diaktifkan saat
-     * disclaimer berhasil ditampilkan (Req 6.4).
-     */
     public function index(): Response
     {
         $disclaimer = 'GENETIKAKU bersifat skrining dan edukasi awal, bukan alat diagnosis medis. '
@@ -24,7 +15,6 @@ class HomeController extends Controller
             .'Selalu konsultasikan kondisi Anda dengan dokter atau ahli genetika.';
 
         return Inertia::render('public/home', [
-            
             'intro' => [
                 'name' => 'GENETIKAKU',
                 'tagline' => 'Prediksi risiko Thalassemia & prediksi karakteristik bayi berbasis Naive Bayes.',
@@ -33,7 +23,6 @@ class HomeController extends Controller
                     .'Sistem memandu Anda melalui empat tahap: skrining risiko, input fenotipe, '
                     .'perhitungan Naive Bayes, dan penyajian hasil beserta edukasi.',
             ],
-            
             'highlights' => [
                 [
                     'title' => 'Skrining Thalassemia',
@@ -52,9 +41,7 @@ class HomeController extends Controller
                     'description' => 'Lihat prediksi karakteristik bayi, risiko Thalassemia, dan penjelasan edukatif.',
                 ],
             ],
-            
             'disclaimer' => $disclaimer,
-        
             'disclaimerAvailable' => $disclaimer !== '',
         ]);
     }

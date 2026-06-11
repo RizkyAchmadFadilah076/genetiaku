@@ -1,7 +1,8 @@
 import { Head, useForm } from '@inertiajs/react';
-import { motion } from 'motion/react';
 import { Stethoscope } from 'lucide-react';
-import { useState, type FormEvent } from 'react';
+import { motion } from 'motion/react';
+import { useState  } from 'react';
+import type {FormEvent} from 'react';
 
 import InputError from '@/components/input-error';
 import PublicLayout from '@/layouts/public-layout';
@@ -44,14 +45,11 @@ const PARENTS: { key: ParentKey; label: string; nameField: 'father_name' | 'moth
 function buildAnswers(indicators: Indicator[]): IndicatorAnswers {
     return indicators.reduce<IndicatorAnswers>((acc, indicator) => {
         acc[indicator.key] = false;
+
         return acc;
     }, {});
 }
 
-/**
- * Ilustrasi bawaan yang ditampilkan bila admin belum mengunggah aset khusus.
- * Memakai aset statis yang dibundel di public/images sehingga selalu tampil.
- */
 const DEFAULT_ILLUSTRATION = '/images/banner-thalassemia.webp';
 
 
@@ -104,7 +102,6 @@ export default function Screening({ indicators, illustration }: ScreeningProps) 
 
     const setIndicator = (parent: ParentKey, key: string, value: boolean) => {
         setData(parent, { ...data[parent], [key]: value });
-        // Tampilkan ilustrasi indikator yang baru saja diinteraksi pada panel.
         setActiveKey(key);
     };
 
@@ -241,7 +238,6 @@ export default function Screening({ indicators, illustration }: ScreeningProps) 
                         </div>
                     </form>
 
-                    {/* Area ilustrasi IMK */}
                     <motion.aside
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}

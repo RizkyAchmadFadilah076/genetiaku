@@ -86,8 +86,14 @@ export default function TrainingDataForm({
     submitLabel,
 }: TrainingDataFormProps) {
     const optionsFor = (category: string): string[] => {
-        if (category === SCREENING) return screeningOptions;
-        if (category === RISK) return riskOptions;
+        if (category === SCREENING) {
+return screeningOptions;
+}
+
+        if (category === RISK) {
+return riskOptions;
+}
+
         return phenotypeOptions[category] ?? [];
     };
 

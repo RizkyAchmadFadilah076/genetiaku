@@ -1,25 +1,19 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { History } from 'lucide-react';
-import { useEffect, type FormEvent } from 'react';
+import { useEffect  } from 'react';
+import type {FormEvent} from 'react';
 
 import InputError from '@/components/input-error';
 import PublicLayout from '@/layouts/public-layout';
 import { cn } from '@/lib/utils';
 
-/**
- * Opsi nilai Fenotipe per kategori dari Data_Fenotipe (Req 2.2). Dikunci dengan
- * label kategori kanonik: 'Golongan Darah', 'Warna Iris Mata', 'Tekstur Rambut',
- * 'Bentuk Cuping Telinga'. Prop ini partial-reloadable (Req 13.2).
- */
 type PhenotypeOptions = Record<string, string[]>;
 
-/** Ilustrasi IMK per nilai: kategori => nilai => {url, type}. */
 type PhenotypeIllustrations = Record<
     string,
     Record<string, { url: string; type: 'image' | 'gif' | 'video' | null }>
 >;
 
-/** Hasil_Skrining Tahap 1 yang ditampilkan read-only (Req 2.3). */
 interface ScreeningSummary {
     father_name: string;
     mother_name: string;
@@ -35,11 +29,6 @@ interface PredictionFormProps {
 
 type ParentKey = 'father' | 'mother';
 
-/**
- * Delapan field yang diharapkan POST /prediksi (route `prediksi.store`).
- * Skema `{parent}_{suffix}`; setiap suffix dipetakan ke label kategori
- * Data_Fenotipe pada {@link CATEGORY_FIELDS}.
- */
 interface PredictionForm {
     father_blood: string;
     father_iris: string;
@@ -56,7 +45,6 @@ type FieldSuffix = 'blood' | 'iris' | 'hair' | 'ear';
 
 type PredictionFieldName = `${ParentKey}_${FieldSuffix}`;
 
-/** Peta suffix field -> label kategori pada phenotypeOptions (sesuai server). */
 const CATEGORY_FIELDS: { suffix: FieldSuffix; category: string }[] = [
     { suffix: 'blood', category: 'Golongan Darah' },
     { suffix: 'iris', category: 'Warna Iris Mata' },
@@ -72,12 +60,6 @@ const PARENTS: { key: ParentKey; label: string; nameField: 'father_name' | 'moth
 const fieldName = (parent: ParentKey, suffix: FieldSuffix): PredictionFieldName =>
     `${parent}_${suffix}`;
 
-/**
- * Halaman prediksi Tahap 2 (Req 2.1, 2.2, 2.3): formulir input Fenotipe ayah &
- * ibu dengan pilihan nilai dari Data_Fenotipe (server props) dan Hasil_Skrining
- * Tahap 1 yang ditampilkan read-only. Mengirim 8 field fenotipe ke POST
- * /prediksi (route `prediksi.store`).
- */
 export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustrations, screening }: PredictionFormProps) {
     const { data, setData, post, processing, errors } = useForm<PredictionForm>({
         father_blood: '',
@@ -90,7 +72,6 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
         mother_ear: '',
     });
 
-    // Refleksikan perubahan Data_Fenotipe terbaru tanpa muat ulang penuh (Req 13.2).
     useEffect(() => {
         router.reload({ only: ['phenotypeOptions', 'phenotypeIllustrations'] });
     }, []);
@@ -128,7 +109,6 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
                     </Link>
                 </header>
 
-                {/* Hasil_Skrining Tahap 1 (read-only, pre-filled) — Req 2.3. */}
                 <section
                     aria-label="Hasil skrining Tahap 1"
                     className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800 dark:bg-neutral-900"

@@ -1,7 +1,6 @@
 import { Head } from '@inertiajs/react';
-import TrainingDataForm, {
-    type PhenotypeOptions,
-} from './training-data-form';
+import TrainingDataForm from './training-data-form';
+import type {PhenotypeOptions} from './training-data-form';
 
 interface CreateProps {
     phenotypeOptions: PhenotypeOptions;

@@ -1,35 +1,21 @@
 import { Loader2Icon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import {
-    resolvePageState,
-    type PageStateInput,
-    type PageStateStatus,
+    resolvePageState
+    
+    
 } from '@/lib/page-state';
+import type {PageStateInput, PageStateStatus} from '@/lib/page-state';
 import { cn } from '@/lib/utils';
 
 export interface PageStateProps extends PageStateInput {
-    /** Rendered when status resolves to `loading`. Falls back to a default spinner. */
     loadingSlot?: ReactNode;
-    /** Rendered when status resolves to `empty`. Falls back to a default message. */
     emptySlot?: ReactNode;
-    /** Rendered when status resolves to `error`. Falls back to a default alert. */
     errorSlot?: ReactNode;
-    /** Rendered when status resolves to `ready`. */
     children?: ReactNode;
-    /** Optional className applied to the wrapper element. */
     className?: string;
 }
 
-/**
- * Generic, reusable status gate built on top of {@link resolvePageState}.
- *
- * Renders EXACTLY ONE of the loading / empty / error / ready indicators based
- * on the single source of truth in `resolvePageState`, so conflicting status
- * indicators can never appear at once (Req 16.7).
- *
- * Accessible defaults: the loading indicator uses `role="status"` and the error
- * indicator uses `role="alert"`.
- */
 export default function PageState({
     isLoading,
     error,
@@ -89,7 +75,6 @@ export default function PageState({
     }
 }
 
-/** Extract a human-readable message from an arbitrary error value. */
 function toMessage(error: unknown): string | undefined {
     if (error === null || error === undefined) {
         return undefined;

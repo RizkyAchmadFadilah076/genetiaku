@@ -19,10 +19,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-
 class PredictionController extends Controller
 {
-   
     public function create(Request $request): Response
     {
         $screeningResultId = $request->session()->get(EnsureScreeningCompleted::SESSION_KEY);
@@ -31,7 +29,6 @@ class PredictionController extends Controller
         $screening = ScreeningResult::query()->findOrFail($screeningResultId);
 
         return Inertia::render('public/prediction/form', [
-            
             'phenotypeOptions' => fn (): array => $this->phenotypeOptions(),
             'phenotypeIllustrations' => fn (): array => $this->phenotypeIllustrations(),
             'screening' => [
@@ -43,7 +40,6 @@ class PredictionController extends Controller
         ]);
     }
 
-    
     public function store(PredictionRequest $request, NaiveBayesClassifier $classifier): RedirectResponse|Response
     {
         $validated = $request->validated();
@@ -58,16 +54,13 @@ class PredictionController extends Controller
         try {
             $outcome = $classifier->predict($input, $this->loadTrainingRows());
         } catch (EmptyTrainingDataException $exception) {
-            
             return back()->with('error', 'Prediksi belum dapat dilakukan karena data latih belum tersedia.');
         } catch (InvalidAttributeException $exception) {
-            
             return back()
                 ->withErrors(['prediksi' => $exception->getMessage()])
                 ->withInput();
         }
 
-        
         $prediction = PredictionResult::query()->create([
             'screening_result_id' => $screening->id,
             'physical_result' => $outcome->physical,
@@ -77,13 +70,9 @@ class PredictionController extends Controller
 
         return Inertia::render('public/prediction/result', [
             'predictionId' => $prediction->id,
-            
             'physical' => $outcome->physical,
-            
             'thalassemiaRisk' => $outcome->thalassemiaRisk->value,
-            
             'probabilities' => $outcome->probabilities,
-            
             'screening' => [
                 'father_name' => $screening->father_name,
                 'mother_name' => $screening->mother_name,
@@ -92,9 +81,7 @@ class PredictionController extends Controller
                 'father_indicators' => $screening->father_indicators ?? [],
                 'mother_indicators' => $screening->mother_indicators ?? [],
             ],
-            
             'education' => $this->educationalContent(),
-            
             'disclaimer' => $this->disclaimer(),
         ]);
     }
@@ -106,13 +93,9 @@ class PredictionController extends Controller
         $screening = $predictionResult->screeningResult;
 
         return Inertia::render('public/prediction/print', [
-            
             'physical' => $predictionResult->physical_result,
-            
             'thalassemiaRisk' => $predictionResult->thalassemia_risk->value,
-            
             'probabilities' => $predictionResult->probabilities,
-           
             'screening' => [
                 'father_name' => $screening->father_name,
                 'mother_name' => $screening->mother_name,
@@ -121,14 +104,11 @@ class PredictionController extends Controller
                 'father_indicators' => $screening->father_indicators ?? [],
                 'mother_indicators' => $screening->mother_indicators ?? [],
             ],
-            
             'education' => $this->educationalContent(),
-           
             'disclaimer' => $this->disclaimer(),
         ]);
     }
 
-  
     private function buildClassifierInput(array $validated, ScreeningResult $screening): array
     {
         return [
@@ -146,8 +126,6 @@ class PredictionController extends Controller
     }
 
     /**
-     * Muat seluruh Data_Latih dari DB dan petakan ke DTO {@see TrainingRow}.
-     *
      * @return list<TrainingRow>
      */
     private function loadTrainingRows(): array
@@ -158,7 +136,6 @@ class PredictionController extends Controller
             ->all();
     }
 
-    
     private function educationalContent(): array
     {
         return [
@@ -171,13 +148,11 @@ class PredictionController extends Controller
         ];
     }
 
-   
     private function disclaimer(): string
     {
         return 'Hasil ini bersifat skrining dan edukasi awal, bukan diagnosis medis, dan tidak menggantikan pemeriksaan laboratorium maupun konsultasi tenaga kesehatan.';
     }
 
-  
     private function phenotypeOptions(): array
     {
         $valuesByCategory = Phenotype::query()
@@ -198,9 +173,6 @@ class PredictionController extends Controller
     }
 
     /**
-     * Ilustrasi IMK per nilai fenotipe: map kategori => nilai => {url, type}.
-     * Hanya memuat nilai yang memiliki ilustrasi.
-     *
      * @return array<string, array<string, array{url:string, type:?string}>>
      */
     private function phenotypeIllustrations(): array

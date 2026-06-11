@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
-import { motion } from 'motion/react';
 import { FileQuestion } from 'lucide-react';
+import { motion } from 'motion/react';
 
 import PublicLayout from '@/layouts/public-layout';
 

@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
-import { useEffect, useState, type PropsWithChildren, type ReactNode } from 'react';
 import { Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -16,46 +17,19 @@ const NAV_ITEMS: PublicNavItem[] = [
     { label: 'Prediksi', href: '/skrining' },
 ];
 
-/**
- * Standing disclaimer shown in the public footer (Req 6.3): GENETIKAKU is a
- * screening and education tool, not a medical diagnosis. Pages may override the
- * footer with their own (e.g. server-provided) disclaimer copy.
- */
 export const PUBLIC_DISCLAIMER =
     'GENETIKAKU bersifat skrining dan edukasi awal, bukan alat diagnosis medis, dan tidak menggantikan pemeriksaan laboratorium maupun konsultasi tenaga kesehatan.';
 
 interface PublicLayoutProps {
-    /** Optional footer content, e.g. a page-specific disclaimer statement. */
     footer?: ReactNode;
 }
 
-/**
- * Public layout for GENETIKAKU.
- *
- * Provides the public header navigation (Beranda, Artikel, Tentang, Prediksi)
- * and a footer that carries the disclaimer statement (Req 6.2, 6.3). The header
- * is sticky and semi-transparent so it reads well overlaying a full-bleed hero.
- *
- * The <main> element is intentionally free of max-width/padding so individual
- * pages can opt into full-bleed sections (e.g. the home hero). Each page wraps
- * its own content in a centered container as needed.
- *
- * Visual tokens come from the Publication design system: the brand accent
- * (#A855F7) via `--color-brand`, the AA-compliant `text-brand-strong` shade for
- * text, the Oswald display font for the wordmark, and `min-h-11` touch targets
- * (Req 16.1, 16.4, 16.6). Visible focus is provided globally in app.css.
- */
 export default function PublicLayout({ children, footer }: PropsWithChildren<PublicLayoutProps>) {
     const { url } = usePage();
     const [menuOpen, setMenuOpen] = useState(false);
 
     const isActive = (href: string): boolean =>
         href === '/' ? url === '/' : url === href || url.startsWith(`${href}/`);
-
-    // Tutup menu mobile setiap kali berpindah halaman.
-    useEffect(() => {
-        setMenuOpen(false);
-    }, [url]);
 
     return (
         <div className="flex min-h-screen flex-col bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
@@ -72,7 +46,6 @@ export default function PublicLayout({ children, footer }: PropsWithChildren<Pub
                         GENETIKAKU
                     </Link>
 
-                    {/* Navigasi horizontal (desktop) */}
                     <ul className="hidden items-center gap-1 md:flex lg:gap-2">
                         {NAV_ITEMS.map((item) => {
                             const active = isActive(item.href);
@@ -96,7 +69,6 @@ export default function PublicLayout({ children, footer }: PropsWithChildren<Pub
                         })}
                     </ul>
 
-                    {/* Tombol hamburger (mobile) */}
                     <button
                         type="button"
                         onClick={() => setMenuOpen((prev) => !prev)}
@@ -113,7 +85,6 @@ export default function PublicLayout({ children, footer }: PropsWithChildren<Pub
                     </button>
                 </nav>
 
-                {/* Panel menu mobile */}
                 {menuOpen ? (
                     <div
                         id="mobile-nav"

@@ -1,9 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
-import { motion } from 'motion/react';
-import { Component, useEffect, useState } from 'react';
-import type { ErrorInfo, ReactNode } from 'react';
 import { ArrowRight, BookOpen, ClipboardList, Dna, Info, Sparkles } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Component, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 
 import FloatingBlood from '@/components/floating-blood';
 import PublicLayout from '@/layouts/public-layout';
@@ -36,7 +36,7 @@ class DisclaimerBoundary extends Component<
         return { hasError: true };
     }
 
-    componentDidCatch(_error: Error, _info: ErrorInfo) {
+    componentDidCatch() {
         this.props.onFailure();
     }
 
@@ -97,10 +97,7 @@ const STEP_STYLES: { icon: LucideIcon; gradient: string; ring: string; text: str
 ];
 
 export default function Home({ intro, highlights, disclaimer, disclaimerAvailable }: HomeProps) {
-    
     const [disclaimerRendered, setDisclaimerRendered] = useState(false);
-
-    
     const canStartScreening = disclaimerAvailable && disclaimerRendered;
 
     return (
@@ -115,14 +112,7 @@ export default function Home({ intro, highlights, disclaimer, disclaimerAvailabl
         >
             <Head title="Beranda" />
 
-            {/* HERO full-viewport dengan latar VIDEO autoplay/loop/muted (Req 6.1).
-                Navigasi atas disediakan oleh PublicLayout (sticky, transparan) yang
-                menumpuk di atas video & lapisan peredup. Konten utama diletakkan
-                pada bagian bawah section. Sel darah mengapung & aksen warna
-                dipertahankan. */}
             <section className="relative -mt-[73px] flex h-[100svh] min-h-[600px] w-full items-end overflow-hidden">
-                {/* Video latar mengisi penuh, edge-to-edge. Poster = banner agar
-                    tetap menarik sebelum/seandainya video belum tersedia. */}
                 <video
                     autoPlay
                     loop
@@ -136,21 +126,17 @@ export default function Home({ intro, highlights, disclaimer, disclaimerAvailabl
                     <source src="/videos/hero.webm" type="video/webm" />
                 </video>
 
-                {/* Lapisan peredup semi-transparan agar konten depan tetap terbaca */}
                 <div
                     aria-hidden="true"
                     className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/45 to-slate-900/25"
                 />
-                {/* Tint hangat pastel (rose/violet) untuk menjaga nuansa warna */}
                 <div
                     aria-hidden="true"
                     className="absolute inset-0 bg-gradient-to-br from-rose-900/20 via-transparent to-violet-900/20"
                 />
 
-                {/* Sel darah mengapung (zigzag) di sisi kiri */}
                 <FloatingBlood />
 
-                {/* Konten bawah: heading, paragraf, lalu dua tombol CTA sebaris */}
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -162,12 +148,10 @@ export default function Home({ intro, highlights, disclaimer, disclaimerAvailabl
                         Sistem Pakar Prediksi Thalassemia
                     </span>
 
-                    {/* Heading pada barisnya sendiri */}
                     <h1 className="mt-5 max-w-3xl text-4xl font-bold tracking-tight text-white drop-shadow-sm sm:text-6xl">
                         {intro.name}
                     </h1>
 
-                    {/* Paragraf pendukung tepat di bawah heading, lebar nyaman dibaca */}
                     <p className="mt-4 max-w-2xl text-base text-rose-100 sm:text-lg">
                         {intro.tagline}
                     </p>
@@ -175,8 +159,6 @@ export default function Home({ intro, highlights, disclaimer, disclaimerAvailabl
                         {intro.description}
                     </p>
 
-                    {/* Baris dua tombol CTA sejajar: primer (kiri) + sekunder (kanan).
-                        Tetap satu kolom yang membungkus pada layar sempit. */}
                     <div className="mt-8 flex flex-row flex-wrap items-center gap-4">
                         {canStartScreening ? (
                             <Link
@@ -221,7 +203,6 @@ export default function Home({ intro, highlights, disclaimer, disclaimerAvailabl
                 </motion.div>
             </section>
 
-            {/* Disclaimer (Req 6.3) wrapped in a boundary that gates the CTA (Req 6.4) */}
             <section className="mx-auto mt-12 max-w-2xl px-6">
                 {disclaimerAvailable ? (
                     <DisclaimerBoundary
@@ -249,7 +230,6 @@ export default function Home({ intro, highlights, disclaimer, disclaimerAvailabl
                 )}
             </section>
 
-            {/* Sorotan alur sebagai flow bernomor yang terhubung */}
             <section className="mx-auto mt-16 max-w-6xl px-6">
                 <motion.h2
                     initial={{ opacity: 0, y: 16 }}
@@ -266,7 +246,6 @@ export default function Home({ intro, highlights, disclaimer, disclaimerAvailabl
                 </motion.h2>
 
                 <ol className="relative mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    {/* Garis penghubung horizontal (desktop) */}
                     <div
                         aria-hidden="true"
                         className="absolute top-7 right-[12%] left-[12%] hidden h-0.5 bg-gradient-to-r from-rose-200 via-violet-200 to-emerald-200 lg:block dark:from-rose-900 dark:via-violet-900 dark:to-emerald-900"
@@ -313,7 +292,6 @@ export default function Home({ intro, highlights, disclaimer, disclaimerAvailabl
                 </ol>
             </section>
 
-            {/* Navigasi konten publik (Req 6.2) */}
             <section className="mx-auto mt-16 mb-20 max-w-5xl px-6">
                 <div className="grid gap-4 sm:grid-cols-2">
                     <Link

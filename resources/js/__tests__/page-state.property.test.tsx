@@ -4,9 +4,10 @@ import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import PageState from '@/components/page-state';
 import {
-    resolvePageState,
-    type PageStateStatus,
+    resolvePageState
+    
 } from '@/lib/page-state';
+import type {PageStateStatus} from '@/lib/page-state';
 
 /**
  * Property 19: Halaman merender tepat satu status.
@@ -97,6 +98,7 @@ describe('Property 19: Halaman merender tepat satu status', () => {
                         if (status === expected) {
                             continue;
                         }
+
                         expect(
                             screen.queryByTestId(TESTIDS[status]),
                         ).not.toBeInTheDocument();

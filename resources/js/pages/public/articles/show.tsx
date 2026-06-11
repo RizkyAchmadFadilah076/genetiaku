@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useMemo } from 'react';
-import { ArrowLeft, ShieldCheck } from 'lucide-react';
 
 import PublicLayout from '@/layouts/public-layout';
 
@@ -58,9 +58,11 @@ function parseContent(content: string): ParsedContent {
     const flush = () => {
         const block = buffer.join('\n').trim();
         buffer = [];
+
         if (!block) {
             return;
         }
+
         if (current) {
             current.blocks.push(block);
         } else {
@@ -72,6 +74,7 @@ function parseContent(content: string): ParsedContent {
 
     for (const line of lines) {
         const match = line.match(headingRe);
+
         if (match) {
             flush();
             const heading = match[1].trim();
@@ -87,6 +90,7 @@ function parseContent(content: string): ParsedContent {
 
         buffer.push(line);
     }
+
     flush();
 
     return { intro, sections };
@@ -126,6 +130,7 @@ export default function ArticlesShow({ article, related }: ArticlesShowProps) {
         if (!article.summary) {
             return [];
         }
+
         return article.summary
             .replace(/\r\n/g, '\n')
             .split(/\n{2,}/)
@@ -149,7 +154,6 @@ export default function ArticlesShow({ article, related }: ArticlesShowProps) {
                     Kembali ke daftar artikel
                 </Link>
 
-                {/* Judul + meta */}
                 <motion.header
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -175,7 +179,6 @@ export default function ArticlesShow({ article, related }: ArticlesShowProps) {
                     </div>
                 </motion.header>
 
-                {/* Poin Utama (summary) + gambar */}
                 {hasKeyPoints && (
                     <motion.section
                         initial={{ opacity: 0, y: 16 }}
@@ -210,7 +213,6 @@ export default function ArticlesShow({ article, related }: ArticlesShowProps) {
                     </motion.section>
                 )}
 
-                {/* Konten utama + sidebar */}
                 <div className="mt-10 gap-10 lg:grid lg:grid-cols-[minmax(0,1fr)_18rem]">
                     <motion.article
                         initial={{ opacity: 0, y: 16 }}
@@ -218,7 +220,6 @@ export default function ArticlesShow({ article, related }: ArticlesShowProps) {
                         transition={{ duration: 0.5, delay: 0.15 }}
                         className="min-w-0"
                     >
-                        {/* Teks sebelum heading pertama (bila ada) */}
                         {intro.length > 0 ? (
                             <div className="mb-10 space-y-4 leading-relaxed text-slate-600 dark:text-neutral-300">
                                 {intro.map((block, index) => (
@@ -247,7 +248,6 @@ export default function ArticlesShow({ article, related }: ArticlesShowProps) {
                             : null}
                     </motion.article>
 
-                    {/* Sidebar */}
                     <motion.aside
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}

@@ -1,5 +1,5 @@
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { Head } from '@inertiajs/react';
+import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 
 export default function AdminDashboard() {
     return (

@@ -1,5 +1,5 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { type FormEvent } from 'react';
+import type {FormEvent} from 'react';
 
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';

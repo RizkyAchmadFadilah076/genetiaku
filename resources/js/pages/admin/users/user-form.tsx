@@ -31,6 +31,7 @@ export default function UserForm({ mode, user }: UserFormProps) {
 
         if (mode === 'create') {
             post('/admin/pengguna');
+
             return;
         }
 

@@ -12,9 +12,10 @@ import { useMemo, useState } from 'react';
 
 import PublicLayout from '@/layouts/public-layout';
 import {
-    getPredictionSessionEntries,
-    type PredictionSessionEntry,
+    getPredictionSessionEntries
+    
 } from '@/lib/prediction-session-history';
+import type {PredictionSessionEntry} from '@/lib/prediction-session-history';
 import { cn } from '@/lib/utils';
 
 const VARIABLE_LABELS: Record<string, string> = {

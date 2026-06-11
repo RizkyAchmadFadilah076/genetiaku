@@ -5,15 +5,12 @@ namespace Database\Seeders;
 use App\Models\TrainingData;
 use Illuminate\Database\Seeder;
 
-
 class TrainingDataSeeder extends Seeder
 {
-    
     private const ROW_COUNT = 160;
 
     public function run(): void
     {
-        // Benih tetap -> dataset deterministik & reproducible.
         mt_srand(20240607);
 
         $blood = ['A', 'B', 'AB', 'O'];
@@ -42,7 +39,6 @@ class TrainingDataSeeder extends Seeder
                 'thalassemia' => $this->pick($screening),
             ];
 
-           
             $baby = [
                 'blood' => $this->inherit($father['blood'], $mother['blood']),
                 'iris' => $this->inherit($father['iris'], $mother['iris']),
@@ -75,7 +71,6 @@ class TrainingDataSeeder extends Seeder
             ];
         }
 
-        
         foreach (array_chunk($rows, 50) as $chunk) {
             TrainingData::query()->insert(
                 array_map(static fn (array $row): array => $row + [
@@ -85,24 +80,19 @@ class TrainingDataSeeder extends Seeder
             );
         }
 
-        mt_srand(); // kembalikan RNG ke kondisi acak.
+        mt_srand();
     }
 
-    
     private function pick(array $items): string
     {
         return $items[mt_rand(0, count($items) - 1)];
     }
 
-    
     private function inherit(string $fromFather, string $fromMother): string
     {
         return mt_rand(0, 1) === 0 ? $fromFather : $fromMother;
     }
 
-    /**
-     * Petakan jumlah skor keparahan kedua orang tua ke Risiko_Thalassemia_Bayi.
-     */
     private function riskFor(int $severitySum): string
     {
         return match (true) {

@@ -20,17 +20,11 @@ interface EducationContent {
 }
 
 interface PrintProps {
-    /** Karakteristik fisik bayi: map kategori => nilai (Req 5.2). */
     physical: Record<string, string>;
-    /** Risiko_Thalassemia_Bayi (Istilah_Laporan: Minor/Intermedia/Mayor) (Req 5.2). */
     thalassemiaRisk: string;
-    /** Probabilitas posterior per variabel keluaran: map variabel => (map kelas => float) (Req 5.2). */
     probabilities: Record<string, Record<string, number>>;
-    /** Konteks Hasil_Skrining terkait (nama & hasil ayah/ibu). */
     screening: ScreeningContext;
-    /** Konten edukasi (Req 5.2). */
     education: EducationContent;
-    /** Pernyataan penyangkalan (Req 5.2). */
     disclaimer: string;
 }
 
@@ -59,7 +53,6 @@ function variableLabel(key: string): string {
     return VARIABLE_LABELS[key] ?? key.replace(/^baby_/, '').replace(/_/g, ' ');
 }
 
-/** Penjelasan singkat arti tingkat Risiko_Thalassemia_Bayi pada keluaran cetak. */
 function riskMeaning(risk: string): string {
     switch (risk) {
         case 'Mayor':
@@ -71,13 +64,6 @@ function riskMeaning(risk: string): string {
     }
 }
 
-/**
- * Tampilan cetak Hasil_Prediksi (Req 5.1, 5.2).
- *
- * Halaman ini tidak memakai chrome navigasi agar keluaran PDF bersih dan formal.
- * Struktur dokumen memakai format laporan A4 dengan kop, tabel, ringkasan hasil,
- * catatan edukasi, dan penyangkalan.
- */
 export default function PredictionPrint({
     physical,
     thalassemiaRisk,
@@ -87,7 +73,6 @@ export default function PredictionPrint({
     disclaimer,
 }: PrintProps) {
     useEffect(() => {
-        // Req 5.1: memicu dialog cetak secara otomatis saat tampilan cetak terbuka.
         const timer = window.setTimeout(() => window.print(), 300);
 
         return () => window.clearTimeout(timer);

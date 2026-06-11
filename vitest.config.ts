@@ -1,5 +1,5 @@
-import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
+import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 // Standalone Vitest config kept separate from `vite.config.ts` so the Laravel /

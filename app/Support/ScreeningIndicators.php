@@ -7,7 +7,6 @@ use App\Models\KnowledgeBaseRule;
 
 class ScreeningIndicators
 {
-
     public static function map(): array
     {
         $rules = KnowledgeBaseRule::query()
@@ -22,14 +21,10 @@ class ScreeningIndicators
                 ->all();
         }
 
-        // Cadangan: daftar bawaan (slug => label) bila Basis_Pengetahuan kosong.
         return ScreeningRequest::INDICATORS;
     }
 
     /**
-     * Daftar indikator lengkap untuk ditampilkan pada formulir, termasuk
-     * ilustrasi IMK per indikator.
-     *
      * @return list<array{key:string,label:string,illustration_url:?string,illustration_type:?string}>
      */
     public static function all(): array
@@ -49,7 +44,6 @@ class ScreeningIndicators
                 ->all();
         }
 
-        // Cadangan tanpa ilustrasi bila Basis_Pengetahuan kosong.
         $fallback = [];
         foreach (ScreeningRequest::INDICATORS as $slug => $label) {
             $fallback[] = [

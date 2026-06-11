@@ -1,8 +1,8 @@
-import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
-import type { BreadcrumbItem } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
+import type { BreadcrumbItem } from '@/types';
 
 interface FlashProps {
     flash?: {

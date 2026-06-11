@@ -17,10 +17,8 @@ use Inertia\Response;
 
 class ScreeningController extends Controller
 {
-    
     public const SESSION_KEY = 'screening_result_id';
 
-   
     public function show(): Response
     {
         $illustration = MediaAsset::query()
@@ -36,7 +34,6 @@ class ScreeningController extends Controller
         ]);
     }
 
-    
     public function store(ScreeningRequest $request, ScreeningEngine $engine): RedirectResponse
     {
         $validated = $request->validated();
@@ -64,10 +61,6 @@ class ScreeningController extends Controller
     }
 
     /**
-     * Muat Basis_Pengetahuan dari DB (dikelola admin). Bila tabel masih kosong,
-     * gunakan aturan default hasil wawancara pakar ({@see ScreeningRuleSet})
-     * sebagai cadangan agar skrining tetap berfungsi.
-     *
      * @return list<KnowledgeBaseRuleDto>
      */
     private function loadRules(): array
@@ -96,10 +89,6 @@ class ScreeningController extends Controller
     }
 
     /**
-     * Ambil daftar label indikator yang dijawab afirmatif ("ya") oleh seorang
-     * orang tua, sebagai snapshot untuk ditampilkan kembali pada hasil/cetak.
-     *
-     * @param  array<string,mixed>  $answers  Jawaban indikator dikunci slug.
      * @return list<string>
      */
     private function selectedIndicators(array $answers): array

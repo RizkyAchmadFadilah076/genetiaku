@@ -31,6 +31,7 @@ export default function UsersIndex({ users, currentUserId }: UsersIndexProps) {
     const handleDelete = (user: UserRow) => {
         if (user.id === currentUserId) {
             alert('Anda tidak dapat menghapus akun sendiri.');
+
             return;
         }
 
