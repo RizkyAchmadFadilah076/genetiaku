@@ -1,4 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
+import { ActionModal } from '@/components/action-modal';
 import { Button } from '@/components/ui/button';
 
 interface ScreeningResultSummary {
@@ -63,12 +65,20 @@ function topProbability(
 }
 
 export default function PredictionResultIndex({ results }: IndexProps) {
+    const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+
     const handleDelete = (id: number) => {
-        if (confirm('Hapus Hasil Prediksi ini?')) {
-            router.delete(`/admin/hasil-prediksi/${id}`, {
-                preserveScroll: true,
-            });
+        setDeleteTargetId(id);
+    };
+
+    const confirmDelete = () => {
+        if (deleteTargetId === null) {
+            return;
         }
+
+        router.delete(`/admin/hasil-prediksi/${deleteTargetId}`, {
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -209,6 +219,20 @@ export default function PredictionResultIndex({ results }: IndexProps) {
                     </div>
                 )}
             </div>
+
+            <ActionModal
+                open={deleteTargetId !== null}
+                title="Hapus hasil prediksi"
+                description="Hapus Hasil Prediksi ini?"
+                confirmLabel="Hapus"
+                confirmVariant="destructive"
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setDeleteTargetId(null);
+                    }
+                }}
+                onConfirm={confirmDelete}
+            />
         </>
     );
 }

@@ -1,4 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
+import { ActionModal } from '@/components/action-modal';
 import { Button } from '@/components/ui/button';
 import type { BreadcrumbItem } from '@/types';
 
@@ -52,12 +54,20 @@ function IllustrationPreview({
 }
 
 export default function KnowledgeBaseIndex({ rules }: IndexProps) {
+    const [deleteTarget, setDeleteTarget] = useState<Rule | null>(null);
+
     const handleDelete = (rule: Rule) => {
-        if (window.confirm(`Hapus aturan "${rule.indicator}"?`)) {
-            router.delete(`/admin/basis-pengetahuan/${rule.id}`, {
-                preserveScroll: true,
-            });
+        setDeleteTarget(rule);
+    };
+
+    const confirmDelete = () => {
+        if (!deleteTarget) {
+            return;
         }
+
+        router.delete(`/admin/basis-pengetahuan/${deleteTarget.id}`, {
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -142,6 +152,24 @@ export default function KnowledgeBaseIndex({ rules }: IndexProps) {
                     </div>
                 )}
             </div>
+
+            <ActionModal
+                open={deleteTarget !== null}
+                title="Hapus aturan"
+                description={
+                    deleteTarget
+                        ? `Hapus aturan "${deleteTarget.indicator}"?`
+                        : 'Hapus aturan ini?'
+                }
+                confirmLabel="Hapus"
+                confirmVariant="destructive"
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setDeleteTarget(null);
+                    }
+                }}
+                onConfirm={confirmDelete}
+            />
         </>
     );
 }

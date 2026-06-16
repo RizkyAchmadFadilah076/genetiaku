@@ -1,4 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
+import { ActionModal } from '@/components/action-modal';
 import { Button } from '@/components/ui/button';
 import type { TrainingRow } from './training-data-form';
 
@@ -41,24 +43,31 @@ const COLUMNS: { key: keyof TrainingRow; label: string }[] = [
 ];
 
 export default function TrainingDataIndex({ rows }: IndexProps) {
+    const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+    const [deleteAllOpen, setDeleteAllOpen] = useState(false);
+
     const handleExport = () => {
         window.location.href = '/admin/data-latih/export';
     };
 
     const handleDelete = (id: number) => {
-        if (confirm('Hapus baris Data Latih ini?')) {
-            router.delete(`/admin/data-latih/${id}`, { preserveScroll: true });
-        }
+        setDeleteTargetId(id);
     };
 
     const handleDeleteAll = () => {
-        if (
-            confirm(
-                `Hapus semua Data Latih (${rows.total} baris)? Tindakan ini tidak dapat dibatalkan.`,
-            )
-        ) {
-            router.delete('/admin/data-latih/hapus-semua', { preserveScroll: true });
+        setDeleteAllOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (deleteTargetId === null) {
+            return;
         }
+
+        router.delete(`/admin/data-latih/${deleteTargetId}`, { preserveScroll: true });
+    };
+
+    const confirmDeleteAll = () => {
+        router.delete('/admin/data-latih/hapus-semua', { preserveScroll: true });
     };
 
     return (
@@ -192,6 +201,30 @@ export default function TrainingDataIndex({ rows }: IndexProps) {
                     </>
                 )}
             </div>
+
+            <ActionModal
+                open={deleteTargetId !== null}
+                title="Hapus Data Latih"
+                description="Hapus baris Data Latih ini?"
+                confirmLabel="Hapus"
+                confirmVariant="destructive"
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setDeleteTargetId(null);
+                    }
+                }}
+                onConfirm={confirmDelete}
+            />
+
+            <ActionModal
+                open={deleteAllOpen}
+                title="Hapus semua Data Latih"
+                description={`Hapus semua Data Latih (${rows.total} baris)? Tindakan ini tidak dapat dibatalkan.`}
+                confirmLabel="Hapus Semua"
+                confirmVariant="destructive"
+                onOpenChange={setDeleteAllOpen}
+                onConfirm={confirmDeleteAll}
+            />
         </>
     );
 }

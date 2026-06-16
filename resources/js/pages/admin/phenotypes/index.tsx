@@ -1,4 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
+import { ActionModal } from '@/components/action-modal';
 import { Button } from '@/components/ui/button';
 import type { BreadcrumbItem } from '@/types';
 
@@ -51,16 +53,20 @@ function IllustrationPreview({
 }
 
 export default function PhenotypeIndex({ phenotypes }: PhenotypeIndexProps) {
+    const [deleteTarget, setDeleteTarget] = useState<PhenotypeEntry | null>(null);
+
     const handleDelete = (entry: PhenotypeEntry) => {
-        if (
-            window.confirm(
-                `Hapus fenotipe "${entry.category}: ${entry.value}"?`,
-            )
-        ) {
-            router.delete(`/admin/fenotipe/${entry.id}`, {
-                preserveScroll: true,
-            });
+        setDeleteTarget(entry);
+    };
+
+    const confirmDelete = () => {
+        if (!deleteTarget) {
+            return;
         }
+
+        router.delete(`/admin/fenotipe/${deleteTarget.id}`, {
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -161,6 +167,24 @@ export default function PhenotypeIndex({ phenotypes }: PhenotypeIndexProps) {
                     </div>
                 )}
             </div>
+
+            <ActionModal
+                open={deleteTarget !== null}
+                title="Hapus fenotipe"
+                description={
+                    deleteTarget
+                        ? `Hapus fenotipe "${deleteTarget.category}: ${deleteTarget.value}"?`
+                        : 'Hapus fenotipe ini?'
+                }
+                confirmLabel="Hapus"
+                confirmVariant="destructive"
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setDeleteTarget(null);
+                    }
+                }}
+                onConfirm={confirmDelete}
+            />
         </>
     );
 }

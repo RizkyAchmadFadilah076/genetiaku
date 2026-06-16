@@ -1,4 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
+import { ActionModal } from '@/components/action-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -15,12 +17,20 @@ export default function AdminArticlesIndex({
 }: {
     articles: ArticleListItem[];
 }) {
+    const [deleteTarget, setDeleteTarget] = useState<ArticleListItem | null>(null);
+
     const handleDelete = (article: ArticleListItem) => {
-        if (confirm(`Hapus artikel "${article.title}"?`)) {
-            router.delete(`/admin/artikel/${article.id}`, {
-                preserveScroll: true,
-            });
+        setDeleteTarget(article);
+    };
+
+    const confirmDelete = () => {
+        if (!deleteTarget) {
+            return;
         }
+
+        router.delete(`/admin/artikel/${deleteTarget.id}`, {
+            preserveScroll: true,
+        });
     };
 
     return (
@@ -108,6 +118,24 @@ export default function AdminArticlesIndex({
                     </div>
                 )}
             </div>
+
+            <ActionModal
+                open={deleteTarget !== null}
+                title="Hapus artikel"
+                description={
+                    deleteTarget
+                        ? `Hapus artikel "${deleteTarget.title}"?`
+                        : 'Hapus artikel ini?'
+                }
+                confirmLabel="Hapus"
+                confirmVariant="destructive"
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setDeleteTarget(null);
+                    }
+                }}
+                onConfirm={confirmDelete}
+            />
         </>
     );
 }

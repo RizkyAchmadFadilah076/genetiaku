@@ -1,5 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { ActionModal } from '@/components/action-modal';
 import type { PredictionResultRow } from './index';
 
 interface ShowProps {
@@ -34,10 +36,14 @@ function sortedDistribution(
 }
 
 export default function PredictionResultShow({ result }: ShowProps) {
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
     const handleDelete = () => {
-        if (confirm('Hapus Hasil Prediksi ini?')) {
-            router.delete(`/admin/hasil-prediksi/${result.id}`);
-        }
+        setDeleteModalOpen(true);
+    };
+
+    const confirmDelete = () => {
+        router.delete(`/admin/hasil-prediksi/${result.id}`);
     };
 
     const screening = result.screening_result;
@@ -179,6 +185,16 @@ export default function PredictionResultShow({ result }: ShowProps) {
                     </div>
                 </section>
             </div>
+
+            <ActionModal
+                open={deleteModalOpen}
+                title="Hapus hasil prediksi"
+                description="Hapus Hasil Prediksi ini?"
+                confirmLabel="Hapus"
+                confirmVariant="destructive"
+                onOpenChange={setDeleteModalOpen}
+                onConfirm={confirmDelete}
+            />
         </>
     );
 }

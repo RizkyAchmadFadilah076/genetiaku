@@ -1,4 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
+import { ActionModal } from '@/components/action-modal';
 import { Button } from '@/components/ui/button';
 import type { BreadcrumbItem } from '@/types';
 import type { UserRow } from './user-form';
@@ -28,16 +30,25 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function UsersIndex({ users, currentUserId }: UsersIndexProps) {
+    const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null);
+    const [selfDeleteModalOpen, setSelfDeleteModalOpen] = useState(false);
+
     const handleDelete = (user: UserRow) => {
         if (user.id === currentUserId) {
-            alert('Anda tidak dapat menghapus akun sendiri.');
+            setSelfDeleteModalOpen(true);
 
             return;
         }
 
-        if (confirm(`Hapus pengguna "${user.name}"?`)) {
-            router.delete(`/admin/pengguna/${user.id}`, { preserveScroll: true });
+        setDeleteTarget(user);
+    };
+
+    const confirmDelete = () => {
+        if (!deleteTarget) {
+            return;
         }
+
+        router.delete(`/admin/pengguna/${deleteTarget.id}`, { preserveScroll: true });
     };
 
     return (
@@ -147,6 +158,34 @@ export default function UsersIndex({ users, currentUserId }: UsersIndexProps) {
                     </>
                 )}
             </div>
+
+            <ActionModal
+                open={selfDeleteModalOpen}
+                title="Aksi tidak tersedia"
+                description="Anda tidak dapat menghapus akun sendiri."
+                confirmLabel="Mengerti"
+                showCancel={false}
+                onOpenChange={setSelfDeleteModalOpen}
+                onConfirm={() => setSelfDeleteModalOpen(false)}
+            />
+
+            <ActionModal
+                open={deleteTarget !== null}
+                title="Hapus pengguna"
+                description={
+                    deleteTarget
+                        ? `Hapus pengguna "${deleteTarget.name}"?`
+                        : 'Hapus pengguna ini?'
+                }
+                confirmLabel="Hapus"
+                confirmVariant="destructive"
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setDeleteTarget(null);
+                    }
+                }}
+                onConfirm={confirmDelete}
+            />
         </>
     );
 }
