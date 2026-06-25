@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AboutController as AdminAboutController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PhenotypeController;
 use App\Http\Controllers\Admin\PredictionResultController;
 use App\Http\Controllers\Admin\KnowledgeBaseController;
@@ -46,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::inertia('/', 'admin/dashboard')->name('dashboard');
+    Route::get('/', AdminDashboardController::class)->name('dashboard');
 
     Route::resource('artikel', AdminArticleController::class)->except(['show']);
 
@@ -92,3 +93,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 require __DIR__.'/settings.php';
+
+
