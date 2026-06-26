@@ -1,8 +1,9 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { History } from 'lucide-react';
-import { useEffect  } from 'react';
-import type {FormEvent} from 'react';
+import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 
+import { ActionModal } from '@/components/action-modal';
 import InputError from '@/components/input-error';
 import PublicLayout from '@/layouts/public-layout';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,13 @@ interface PredictionFormProps {
     phenotypeOptions: PhenotypeOptions;
     phenotypeIllustrations: PhenotypeIllustrations;
     screening: ScreeningSummary;
+}
+
+interface PredictionPageProps extends PredictionFormProps {
+    flash?: {
+        error?: string | null;
+    };
+    [key: string]: unknown;
 }
 
 type ParentKey = 'father' | 'mother';
@@ -52,29 +60,66 @@ const CATEGORY_FIELDS: { suffix: FieldSuffix; category: string }[] = [
     { suffix: 'ear', category: 'Bentuk Cuping Telinga' },
 ];
 
-const PARENTS: { key: ParentKey; label: string; nameField: 'father_name' | 'mother_name'; resultField: 'father_result' | 'mother_result' }[] = [
-    { key: 'father', label: 'Ayah', nameField: 'father_name', resultField: 'father_result' },
-    { key: 'mother', label: 'Ibu', nameField: 'mother_name', resultField: 'mother_result' },
+const PARENTS: {
+    key: ParentKey;
+    label: string;
+    nameField: 'father_name' | 'mother_name';
+    resultField: 'father_result' | 'mother_result';
+}[] = [
+    {
+        key: 'father',
+        label: 'Ayah',
+        nameField: 'father_name',
+        resultField: 'father_result',
+    },
+    {
+        key: 'mother',
+        label: 'Ibu',
+        nameField: 'mother_name',
+        resultField: 'mother_result',
+    },
 ];
 
-const fieldName = (parent: ParentKey, suffix: FieldSuffix): PredictionFieldName =>
-    `${parent}_${suffix}`;
+const fieldName = (
+    parent: ParentKey,
+    suffix: FieldSuffix,
+): PredictionFieldName => `${parent}_${suffix}`;
 
-export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustrations, screening }: PredictionFormProps) {
-    const { data, setData, post, processing, errors } = useForm<PredictionForm>({
-        father_blood: '',
-        father_iris: '',
-        father_hair: '',
-        father_ear: '',
-        mother_blood: '',
-        mother_iris: '',
-        mother_hair: '',
-        mother_ear: '',
-    });
+export default function PredictionFormPage({
+    phenotypeOptions,
+    phenotypeIllustrations,
+    screening,
+}: PredictionFormProps) {
+    const { props } = usePage<PredictionPageProps>();
+    const flashError = props.flash?.error;
+    const [isTrainingDataModalOpen, setIsTrainingDataModalOpen] =
+        useState(false);
+
+    const { data, setData, post, processing, errors } = useForm<PredictionForm>(
+        {
+            father_blood: '',
+            father_iris: '',
+            father_hair: '',
+            father_ear: '',
+            mother_blood: '',
+            mother_iris: '',
+            mother_hair: '',
+            mother_ear: '',
+        },
+    );
 
     useEffect(() => {
         router.reload({ only: ['phenotypeOptions', 'phenotypeIllustrations'] });
     }, []);
+
+    useEffect(() => {
+        if (
+            flashError ===
+            'Prediksi belum dapat dilakukan karena data latih belum tersedia.'
+        ) {
+            setIsTrainingDataModalOpen(true);
+        }
+    }, [flashError]);
 
     const submit = (event: FormEvent) => {
         event.preventDefault();
@@ -85,6 +130,16 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
         <PublicLayout>
             <Head title="Prediksi Karakteristik Bayi" />
 
+            <ActionModal
+                open={isTrainingDataModalOpen}
+                title="Data Latih Tidak Tersedia"
+                description="Prediksi belum dapat dilakukan karena data latih belum tersedia. Silakan hubungi admin untuk menambahkan data latih terlebih dahulu."
+                confirmLabel="Mengerti"
+                showCancel={false}
+                onOpenChange={setIsTrainingDataModalOpen}
+                onConfirm={() => setIsTrainingDataModalOpen(false)}
+            />
+
             <section className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
                 <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
@@ -92,8 +147,9 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
                             Input Fenotipe Orang Tua
                         </h1>
                         <p className="mt-2 text-base text-slate-600 dark:text-neutral-400">
-                            Pilih karakteristik fisik ayah dan ibu. Hasil skrining Tahap 1 telah
-                            terisi otomatis dan tidak dapat diubah.
+                            Pilih karakteristik fisik ayah dan ibu. Hasil
+                            skrining Tahap 1 telah terisi otomatis dan tidak
+                            dapat diubah.
                         </p>
                     </div>
                     <Link
@@ -113,19 +169,23 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
                     aria-label="Hasil skrining Tahap 1"
                     className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800 dark:bg-neutral-900"
                 >
-                    <h2 className="text-lg font-semibold text-rose-600 dark:text-rose-300">Hasil Skrining Thalassemia</h2>
+                    <h2 className="text-lg font-semibold text-rose-600 dark:text-rose-300">
+                        Hasil Skrining Thalassemia
+                    </h2>
                     <dl className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                         {PARENTS.map((parent) => (
                             <div key={parent.key} className="space-y-1">
                                 <dt className="text-sm font-medium text-slate-700 dark:text-neutral-300">
-                                    {parent.label}: {screening[parent.nameField]}
+                                    {parent.label}:{' '}
+                                    {screening[parent.nameField]}
                                 </dt>
                                 <dd>
                                     <label
                                         htmlFor={`${parent.key}-screening-result`}
                                         className="sr-only"
                                     >
-                                        Hasil skrining {parent.label.toLowerCase()}
+                                        Hasil skrining{' '}
+                                        {parent.label.toLowerCase()}
                                     </label>
                                     <input
                                         id={`${parent.key}-screening-result`}
@@ -156,11 +216,14 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
                                 {CATEGORY_FIELDS.map(({ suffix, category }) => {
                                     const name = fieldName(parent.key, suffix);
                                     const inputId = `${parent.key}-${suffix}`;
-                                    const options = phenotypeOptions[category] ?? [];
+                                    const options =
+                                        phenotypeOptions[category] ?? [];
                                     const error = errors[name];
                                     const selected = data[name];
                                     const media = selected
-                                        ? phenotypeIllustrations[category]?.[selected]
+                                        ? phenotypeIllustrations[category]?.[
+                                              selected
+                                          ]
                                         : undefined;
 
                                     return (
@@ -175,9 +238,20 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
                                                 id={inputId}
                                                 name={name}
                                                 value={data[name]}
-                                                onChange={(event) => setData(name, event.target.value)}
-                                                aria-invalid={error ? true : undefined}
-                                                aria-describedby={error ? `${inputId}-error` : undefined}
+                                                onChange={(event) =>
+                                                    setData(
+                                                        name,
+                                                        event.target.value,
+                                                    )
+                                                }
+                                                aria-invalid={
+                                                    error ? true : undefined
+                                                }
+                                                aria-describedby={
+                                                    error
+                                                        ? `${inputId}-error`
+                                                        : undefined
+                                                }
                                                 className={cn(
                                                     'mt-1 block min-h-11 w-full rounded-md border px-3 py-2 text-sm',
                                                     'text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100',
@@ -187,16 +261,25 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
                                                         : 'border-neutral-300 dark:border-neutral-700',
                                                 )}
                                             >
-                                                <option value="">Pilih {category.toLowerCase()}…</option>
+                                                <option value="">
+                                                    Pilih{' '}
+                                                    {category.toLowerCase()}…
+                                                </option>
                                                 {options.map((value) => (
-                                                    <option key={value} value={value}>
+                                                    <option
+                                                        key={value}
+                                                        value={value}
+                                                    >
                                                         {value}
                                                     </option>
                                                 ))}
                                             </select>
-                                            <InputError id={`${inputId}-error`} message={error} />
+                                            <InputError
+                                                id={`${inputId}-error`}
+                                                message={error}
+                                            />
                                             {media ? (
-                                                <div className="mt-2 flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 p-2 dark:border-neutral-800 dark:bg-neutral-900">
+                                                <div className="mt-3 rounded-xl border border-neutral-200 bg-neutral-50 p-3 dark:border-neutral-800 dark:bg-neutral-900">
                                                     {media.type === 'video' ? (
                                                         <video
                                                             src={media.url}
@@ -205,18 +288,20 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
                                                             loop
                                                             playsInline
                                                             aria-hidden="true"
-                                                            className="h-14 w-14 shrink-0 rounded-md object-cover"
+                                                            className="h-32 w-full rounded-lg bg-white object-contain sm:h-36 dark:bg-neutral-950"
                                                         />
                                                     ) : (
                                                         <img
                                                             src={media.url}
                                                             alt=""
                                                             aria-hidden="true"
-                                                            className="h-14 w-14 shrink-0 rounded-md object-cover"
+                                                            className="h-32 w-full rounded-lg bg-white object-contain sm:h-36 dark:bg-neutral-950"
                                                         />
                                                     )}
-                                                    <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                                                        Ilustrasi {category.toLowerCase()}: {selected}
+                                                    <span className="mt-2 block text-xs text-neutral-500 dark:text-neutral-400">
+                                                        Ilustrasi{' '}
+                                                        {category.toLowerCase()}
+                                                        : {selected}
                                                     </span>
                                                 </div>
                                             ) : null}
@@ -238,7 +323,9 @@ export default function PredictionFormPage({ phenotypeOptions, phenotypeIllustra
                                 'disabled:cursor-not-allowed disabled:opacity-60',
                             )}
                         >
-                            {processing ? 'Menghitung…' : 'Lihat Hasil Prediksi'}
+                            {processing
+                                ? 'Menghitung…'
+                                : 'Lihat Hasil Prediksi'}
                         </button>
                     </div>
                 </form>
