@@ -1,7 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
-import AppLogoIcon from '@/components/app-logo-icon';
 import InputError from '@/components/input-error';
-import PasskeyVerify from '@/components/passkey-verify';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -23,25 +21,14 @@ export default function Login({ status, canResetPassword }: Props) {
             <Head title="Login Admin" />
 
             <div className="rounded-lg border bg-card p-6 shadow-sm">
-                <div className="mb-6 flex items-center gap-3 border-b pb-5">
-                    <div className="flex size-11 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                        <AppLogoIcon className="size-7 fill-current" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-muted-foreground">
-                            GENETIKAKU
-                        </p>
-                        <h2 className="text-lg font-semibold leading-tight">
-                            Login Admin
-                        </h2>
-                    </div>
+                <div className="mb-6 flex flex-col items-center gap-1 border-b pb-5 text-center">
+                    <p className="text-sm font-bold tracking-wider text-primary">
+                        GENETIKAKU
+                    </p>
+                    <h2 className="text-lg font-semibold leading-tight">
+                        Login Admin
+                    </h2>
                 </div>
-
-                <PasskeyVerify
-                    label="Masuk dengan passkey"
-                    loadingLabel="Memverifikasi..."
-                    separator="Atau masuk dengan username"
-                />
 
                 <Form
                     {...store.form()}

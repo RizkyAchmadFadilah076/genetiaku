@@ -1,7 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { ActionModal } from '@/components/action-modal';
+import { Button } from '@/components/ui/button';
 import type { PredictionResultRow } from './index';
 
 interface ShowProps {
